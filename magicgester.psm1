@@ -1,26 +1,40 @@
-using module .\libs\sm\colorconsole\libs\cmdlets\New-ColorConsole.psm1
-using module .\libs\cmdlets\Export-SvgRanges.psm1
-using module .\libs\cmdlets\Get-ImageInfo.psm1
+# MagicGester Root Module Loader
+# ---------------------------------------------------------------------------
+using module src\phwriter\phwriter.psm1
+# ---------------------------------------------------------------------------
 
+$root = Split-Path -Parent $MyInvocation.MyCommand.Definition
+$src  = Join-Path $root "src"
 
-$global:_magicgester = @{
-    rootpath  = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
-    logProps = @{
-        logname   = "[$(csole -s '+' -c darkmagenta)] $(csole -s 'NagicGester' -c yellow)"
-        seperator = " $(csole -s • -c darkmagenta) "
-        sublog    = " $(csole -s '•' -c darkmagenta) "
+# Directories to search
+$dirs = @("Public", "Private", "Helpers", "Classes", "UI")
+
+foreach ($dir in $dirs) {
+    $path = Join-Path $src $dir
+    if ([System.IO.Directory]::Exists($path)) {
+        # Dot-source all .ps1 files
+        [System.IO.Directory]::GetFiles($path, "*.ps1", [System.IO.SearchOption]::AllDirectories) | ForEach-Object {
+            try {
+                . $_
+            } catch {
+                Write-Error "Failed to load: $_. Error: $($_.Exception.Message)"
+            }
+        }
     }
 }
 
-$module_config = @{
-    function = @(
-        'Export-SvgRanges',
-        'Get-ImageInfo'
-    )
-    alias = @(
-        'mgerx',
-        'mgeri'
-    )
+# ---------------------------------------------------------------------------
+# EXPORT CONTROL
+# ---------------------------------------------------------------------------
+
+$publicPath = Join-Path $src "Public"
+$publicFunctions = @()
+
+if ([System.IO.Directory]::Exists($publicPath)) {
+    $publicFunctions = [System.IO.Directory]::GetFiles($publicPath, "*.ps1") | ForEach-Object {
+        [System.IO.Path]::GetFileNameWithoutExtension($_)
+    }
 }
 
-Export-ModuleMember @module_config
+# Explicitly export only Public functions
+Export-ModuleMember -Function $publicFunctions -Alias *
