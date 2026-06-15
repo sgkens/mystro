@@ -89,5 +89,25 @@ $phwriter_metadata_array = @(
         examples    = @(
             "New-MGRelease -Config $config -Version '0.2.0'"
         )
+    },
+    @{
+        commandinfo = @{
+            cmdlet      = "Invoke-MGImageProcessor"
+            synopsis    = "Invoke-MGImageProcessor -Source <String> -OutputDir <String> [-Range <String>] [-Quality <Int>] [-Format <String>]"
+            description = "Performs generic image resizing, compression, and optimization for raster assets using ImageMagick."
+            source      = $source
+        }
+        paramtable  = @(
+            @{ name = "Source"; param = "Source"; type = "string"; required = $true; description = "Path to the source image file."; inline = $false },
+            @{ name = "OutputDir"; param = "OutputDir"; type = "string"; required = $true; description = "Directory where processed assets will be stored."; inline = $false },
+            @{ name = "Range"; param = "Range"; type = "string"; required = $false; description = "Target resolution (e.g. '32x32')."; inline = $false },
+            @{ name = "Quality"; param = "Quality"; type = "int"; required = $false; description = "Compression quality (1-100). Default is 85."; inline = $true },
+            @{ name = "Format"; param = "Format"; type = "string"; required = $false; description = "Target output format (png, jpg, webp, etc.)."; inline = $false },
+            @{ name = "Help"; param = "Help"; type = "switch"; required = $false; description = "Display this help information."; inline = $true }
+        )
+        examples    = @(
+            "Invoke-MGImageProcessor -Source 'photo.jpg' -OutputDir './dist' -Range '800x600' -Quality 75",
+            "mgproc 'logo.png' './dist' -Range '64x64' -Format webp"
+        )
     }
 )
