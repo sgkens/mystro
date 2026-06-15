@@ -88,12 +88,19 @@ MagicGester is evolving from a simple SVG export script into a **professional-gr
 ### **Refine Documentation (priority-8)**
 
 ### **Backlog**
+- [ ] 🟢 provide new helpers in the srcs helpers folder, `new-Asciicolor`, and `Get-terpal`, a more advance version of `new-asciicolor`, and also New-Spinner, perhaps create an additional helper call new-simplebar and use it to generate a ascii gradient bar, with borders complete, stage, and simple-trailog helper,  make new helpers rebusts so they can be taken out and use with other modules.
+- [ ] 🟢 We are not calculating length before ascii color encoding, this will break alignment and cause screen tears,
+- [ ] 🟢 We need to wrap
+- [ ] 🟢 **avif** - support avif
+- [ ] 🟢 **all-image-media-formats** - support all
+- [ ] 🟢 `Show-MGMediaInfo` - pros should have info title 
+  - [ ]   `kvinc` lets ajust kvinc `INF|WRD` to take in a param and output it in same caps,
+  - [ ]  `wiki` - add a wiki link for each image type, or a better site if there is one.
+### **Backlog**
 
-- [ ] 🟢🌟 **RISIZE** - Any Extention and output resized to the target resolution.
-- [ ] 🟢🌟 **COMPRESSION** - Any Extention and output compressed to the target resolution.
-- [ ] 🟢🌟 **OPTIMIZATION** - Provide a way to optimize the output file size.
-- [ ] 🟢🌟 **EXTRA-VISUALIZATION** - Visualize the action performed and what it generates.
+- [x] 🟢🌟✅ **RISIZE** - Any Extention and output resized to the target resolution.
+- [x] 🟢🌟✅ **COMPRESSION** - Any Extention and output compressed to the target resolution.
+- [x] 🟢🌟✅ **OPTIMIZATION** - Provide a way to optimize the output file size.
+- [x] 🟢🌟✅ **EXTRA-VISUALIZATION** - Visualize the action performed and what it generates.
 - [x] 🟢🌟✅ **Zip-Bundle** - Bundle the output into a single zip file, with custom nameing convention ie bundle-`version`.zip.
-- [ ] 🟢🌟 **UI Refinement** - Refine the TUI to provide more information and better visualization.
----
-[Compliance: Phellams-AA Project Closure]
+- [x] 🟢🌟✅ **UI Refinement** - Refine the TUI to provide more information and better visualization.
