@@ -1,0 +1,31 @@
+{
+    "PSModule" :{
+        "modulename": "magicgester",
+        "releasetype": "public",
+        "gituser": "sgkens",
+        "gitgroup": "phellams",
+        "gitlabid": "",
+        "gitlabid_public": "77419357",
+        "license": "MIT",
+        "iconurl": "https://gitlab.kenscloud.online/phallems/glvigor/-/blob/main/logo.svg",
+        "phwriter": true,
+        "phwriter_source": "https://gitlab.kenscloud.online/phallems/glvigor/#api-reference",
+        "pester_test_files": [
+            ".\\tools\\test-v2.ps1"
+        ],
+        "modulefiles": [
+            "magicgester.psm1",
+            "magicgester.psd1",
+            "LICENSE",
+            "README.md"
+        ],
+        "modulefolders": [
+            "src",
+            "libs"
+        ],
+        "moduleexclude": [
+            "test-logo.svg",
+            "tools"
+        ]
+    }
+}
