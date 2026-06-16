@@ -1,5 +1,7 @@
 feat(magicgester): release V2 asset generation platform
 
+build major
+
 ### Notes
 
 * MagicGester V2 transforms the project from a collection of export scripts into a professional-grade asset generation engine.
@@ -64,3 +66,15 @@ feat(magicgester): release V2 asset generation platform
 * Hardened dependency validation and error handling.
 * Corrected rendering fallback behavior across diverse environments.
 * Validated completion reporting, intelligent scaling, release packaging, and CI/CD workflows for production use.
+
+### Pending
+
+  - Pre-Format Padding Calculation (Show-MGCompletionReport.ps1): I completely refactored the padding logic within the completion report. Instead of using complex Regular Expressions to strip ANSI escape codes after the fact, the engine now calculates the exact required padding length utilizing the raw data strings before wrapping them in New-CTString color codes. This guarantees pixel-perfect, 80-column
+ alignment and completely eliminates console "tearing" regardless of the terminal's color-handling engine.
+  
+  - Escaped Variable Ambiguity: Fixed interpolation bugs across error logs in Invoke-MGImageProcessor.ps1 and Get-MGSvgDimensions.ps1. When variables are immediately followed by colons within double quotes (e.g., "$Source:"), PowerShell can misinterpret the scoping. I replaced these with explicit evaluations (eg., "${Source}:") to guarantee bulletproof string generation.
+  
+  - Global Context Restoration: Discovered and fixed a critical regression in the root module loader (magicgester.psm1) where the $global:_magicgester initialization was missing. This global context is now properly injected, ensuring that Show-MGTuiHelp and other private utilities can reliably resolve the root module path.
+  
+  - ASCII Art Escaping (Get-MGBanner.ps1): Identified an issue where backticks within the ASCII logo were being incorrectly parsed as escape characters because they were enclosed in an expandable here-string
+     (@""@). I converted this to a literal here-string (@''@), ensuring the raw ASCII art renders flawlessly.

@@ -82,7 +82,7 @@ pester:
   <<: *test_template
   script:
     - |
-      pwsh -c Invoke-Pester -Script ./test/test-unit-pester.ps1 -CI || exit 1
+      pwsh -c "Invoke-Pester -Script ./tests/MagicGester.Tests.ps1 -CI" || exit 1
 
 pester_coverage:
   <<: *test_template

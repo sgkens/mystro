@@ -11,7 +11,7 @@
         "phwriter": true,
         "phwriter_source": "https://gitlab.kenscloud.online/phallems/glvigor/#api-reference",
         "pester_test_files": [
-            ".\\tools\\test-v2.ps1"
+            ".\\tests\\MagicGester.Tests.ps1"
         ],
         "modulefiles": [
             "magicgester.psm1",
