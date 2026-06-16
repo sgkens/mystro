@@ -50,16 +50,47 @@ mystro config -Source "./assets/logo.svg" -OutputDir "./dist" -AutoScale | mystr
 
 ## **API Reference**
 
-### `Invoke-Mystro` (`mystro`)
+### *💲Invoke-Mystro* (Alias: `mystro`)
+
 The central routing interface for MagicGester asset generation. Supports multiple operational modes to encapsulate the toolkit's functionality.
 
-#### Modes:
-- **`config`**: Generates a structured configuration dataset. (Wraps `New-MGConfig`)
-- **`Gen`**: Executes the high-performance asset transformation pipeline. (Wraps `Invoke-MagicGester`)
-- **`minfo`**: Retrieves file metadata or displays format documentation. (Wraps `Get-MGImageInfo` and `Show-MGMediaInfo`)
-- **`MGI`**: Performs generic image resizing and compression. (Wraps `Invoke-MGImageProcessor`)
-- **`release`**: Automates CI/CD releases and draft notes. (Wraps `New-MGRelease`)
-- **`help`**: Displays the PHWriter TUI documentation.
+**🔹Syntax:**
+
+```powershell
+Invoke-Mystro [-Mode] <String> [[-Config] <PSObject>] [-Source <String>] 
+              [-OutputDir <String>] [-Format <String>] [-Formats <String[]>] 
+              [-PngRanges <String[]>] [-IcoRanges <String[]>] [-WebpRanges <String[]>] 
+              [-JpgRanges <String[]>] [-SvgRanges <String[]>] [-AutoScale] 
+              [-AsJson] [-SaveLocal] [-ZipBundle] [-Commit] [-Version <String>] 
+              [-Range <String>] [-Quality <Int32>] [-Help] [<CommonParameters>]
+```
+
+**🔹Parameters**
+
+| **Parameter** | **Type** | **Required** | **Default** | **Validation** | **Description** |
+| --- | --- | --- | --- | --- | --- |
+| `Mode` | `String` | True | None | `help, Gen, release, minfo, config, MGI` | The operational mode to execute. |
+| `Config` | `PSObject` | False | None | None | Pipeline configuration object (required for `Gen` and `release`). |
+| `Source` | `String` | False | None | None | Path to the source file or directory. |
+| `OutputDir` | `String` | False | None | None | Destination directory for generated or processed assets. |
+| `Formats` | `String[]` | False | `@('png', 'ico', 'webp')` | None | Array of target formats to generate in `config` mode. |
+| `AutoScale` | `Switch` | False | False | None | Automatically calculate scaling ranges while preserving aspect ratio. |
+| `SaveLocal` | `Switch` | False | False | None | Saves the generated configuration JSON to `~/.phellams/mystro/config.json`. |
+| `ZipBundle` | `Switch` | False | False | None | Aggregates all generated outputs into a single, versioned ZIP archive. |
+| `Quality` | `Int32` | False | `85` | `1-100` | Target quality for raster compression in `MGI` mode. |
+| `Help` | `Switch` | False | False | None | Triggers the interactive TUI documentation via PHWriter. |
+
+**🔻Outputs**
+
+`System.Management.Automation.PSCustomObject`
+
+**Mode Breakdown:**
+- `config`: Generates a structured configuration dataset. (Wraps `New-MGConfig`)
+- `Gen`: Executes the high-performance asset transformation pipeline. (Wraps `Invoke-MagicGester`)
+- `minfo`: Retrieves file metadata or displays format documentation. (Wraps `Get-MGImageInfo` and `Show-MGMediaInfo`)
+- `MGI`: Performs generic image resizing and compression. (Wraps `Invoke-MGImageProcessor`)
+- `release`: Automates CI/CD releases and draft notes. (Wraps `New-MGRelease`)
+- `help`: Displays the PHWriter TUI documentation.
 
 ## 📊 Media Information
 MagicGester includes a TUI-based information manager to help you choose the best formats for your needs:
