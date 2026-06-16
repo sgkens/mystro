@@ -66,6 +66,7 @@ MagicGester is evolving from a simple SVG export script into a **professional-gr
 * [x] 🟢🌟✅3️⃣ **ARCH** - Add high-speed .NET file discovery for source directories.
 * [x] 🟢🌟✅3️⃣ **CI** - Implement automated CI/CD release wrapper (New-MGRelease).
 * [x] 🟢🌟✅3️⃣ **ARCH** - Integrated ZIP bundling for asset distribution.
+* [x] 🟢🌟✅3️⃣ **CI** - Implement Pester test suite for automated module validation.
 
 ### **Bug Fixes (priority-4)**
 * [x] 🟢🩹✅4️⃣ **UI** - Fixed variable interpolation and ValidateSet issues in TUI components.
@@ -84,7 +85,17 @@ MagicGester is evolving from a simple SVG export script into a **professional-gr
 * [x] 🟢🌟✅6️⃣ **CONFIG** - Standardize build process with Phellams build_config.json.
 
 ### **Refine Features (priority-7)**
+* [x] 🟢 lets change invoke-magicgester to invoke-mystro mystro, lets use this as the main router, 
+  ```
+  mystro mode params
+         help
+         Gen - Generate Assets
+         release - Perform release functions
+         minfo - media info
+         config(New-MGConfig) - lets also give the user a way to store this locally in ~/.phellams/mystro in json form
+         MGI - Media Image Proccessor.
 
+  ```
 ### **Refine Documentation (priority-8)**
 
 ### **Backlog**

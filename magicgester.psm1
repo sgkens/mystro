@@ -3,8 +3,12 @@
 using module src\phwriter\phwriter.psm1
 # ---------------------------------------------------------------------------
 
-$root = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$src  = Join-Path $root "src"
+$root_path = Split-Path -Parent $MyInvocation.MyCommand.Definition
+$src = Join-Path $root_path "src"
+
+$global:_magicgester = @{
+    rootpath = $root_path
+}
 
 # Directories to search
 $dirs = @("Public", "Private", "Helpers", "Classes", "UI")

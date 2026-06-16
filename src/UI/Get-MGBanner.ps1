@@ -10,7 +10,7 @@ function Get-MGBanner {
     )
 
     process {
-        $ascii = @"
+        $ascii = @'
   __  __             _         _____           _            
  |  \/  |           (_)       / ____|         | |           
  | \  / | __ _  __ _ _  ___  | |  __  ___  ___| |_ ___ _ __ 
@@ -19,11 +19,13 @@ function Get-MGBanner {
  |_|  |_|\__,_|\__, |_|\___|  \_____|\___||___/\__\___|_|   
                 __/ |                                       
                |___/                                        
-"@
+'@
 
         # Using New-AsciiGradient if available, otherwise fallback to simple color
         if (Get-Command New-AsciiGradient -ErrorAction SilentlyContinue) {
-            New-AsciiGradient -Text $ascii -Color1 $Color1 -Color2 $Color2
+            # New-AsciiGradient expects integer steps for 256 colors.
+            # Using standard Phellams colors: DarkMagenta to Yellow-ish
+            New-AsciiGradient -Type fg -Steps @(55, 93, 129, 214, 226) -String $ascii
         } else {
             Write-Host $ascii -ForegroundColor $Color2
         }

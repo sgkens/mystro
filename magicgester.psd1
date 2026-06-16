@@ -8,22 +8,14 @@
     Description        = 'High-Performance Asset Generation & Management Engine for automated SVG-to-multi-format pipelines.'
     
     FunctionsToExport  = @(
-        'New-MGConfig',
-        'Invoke-MagicGester',
-        'Get-MGImageInfo',
-        'Show-MGMediaInfo',
-        'New-MGRelease'
+        'Invoke-Mystro'
     )
     
     CmdletsToExport    = @()
     VariablesToExport  = @()
     
     AliasesToExport    = @(
-        'mgconf',
-        'mginv',
-        'mgeri',
-        'mginfo',
-        'mgls'
+        'mystro'
     )
     
     PrivateData        = @{

@@ -82,6 +82,7 @@ function New-Kvinc {
         switch ($type) {
             # NOTE: Add in more options
             'inf'  { $string += "`e[37$($utility.kvinc_type_format)mINF`e[0m ≡" }
+            'suc'  { $string += "`e[32$($utility.kvinc_type_format)mSUC`e[0m ≡" }
             'wrn'  { $string += "`e[33$($utility.kvinc_type_format)mWRN`e[0m ≡" }
             'err'  { $string += "`e[31$($utility.kvinc_type_format)mERR`e[0m ≡" }
             'prop' { $string += "`e[31$($utility.kvinc_type_format)mPROP`e[0m ≡" }
@@ -108,7 +109,5 @@ function New-Kvinc {
 }
 
 # Example usage:
-
-# $message = "This is a test message with a {kv:username=JohnDoe} and a {prop:kv:userid=12345} and a {meta:kv:session=abcde"
-# $result = New-kvstring -message $messageeta:kv:session=abcde"
-# $result = New-kvstring -message $message
+# $message = "This is a test message with a {kv:username=JohnDoe}"
+# $result = New-Kvinc -keyName 'username' -KeyValue 'JohnDoe' -type inf

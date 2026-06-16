@@ -15,14 +15,26 @@ function Show-MGCompletionReport {
 
         Write-Host ""
         Write-Host "╔$HBorder╗" -ForegroundColor DarkMagenta
-        Write-Host "║ $(ctstr '{ct:yellow:b:PIPELINE COMPLETION REPORT}')" + (" " * 53) + "║" -ForegroundColor DarkMagenta
+        $titleRaw = " PIPELINE COMPLETION REPORT"
+        $pad0 = 80 - $titleRaw.Length
+        Write-Host "║ $(ctstr "{ct:yellow:b:$titleRaw}")$(" " * $pad0)║" -ForegroundColor DarkMagenta
         Write-Host "╠$HBorder╣" -ForegroundColor DarkMagenta
 
         foreach ($job in $Stats.Jobs) {
             $sourceSizeStr = Format-MGBytes -Bytes $job.SourceSize
-            Write-Host "║ 💠 Job: $(ctstr "{ct:cyan:b:$($job.Name)}")" + (" " * (70 - $job.Name.Length)) + "║" -ForegroundColor DarkMagenta
-            Write-Host "║    Source: $($job.Source)" + (" " * (71 - $job.Source.Length)) + "║" -ForegroundColor DarkMagenta
-            Write-Host "║    Size:   $sourceSizeStr" + (" " * (71 - $sourceSizeStr.Length)) + "║" -ForegroundColor DarkMagenta
+            
+            $jobRaw = " 💠 Job: $($job.Name)"
+            $pad1 = 80 - $jobRaw.Length
+            Write-Host "║ $(ctstr "{ct:cyan:b:$jobRaw}")$(" " * $pad1)║" -ForegroundColor DarkMagenta
+            
+            $srcRaw = "    Source: $($job.Source)"
+            $pad2 = 80 - $srcRaw.Length
+            Write-Host "║ $srcRaw$(" " * $pad2)║" -ForegroundColor DarkMagenta
+            
+            $sizeRaw = "    Size:   $sourceSizeStr"
+            $pad3 = 80 - $sizeRaw.Length
+            Write-Host "║ $sizeRaw$(" " * $pad3)║" -ForegroundColor DarkMagenta
+            
             Write-Host "╟$Divider╢" -ForegroundColor DarkMagenta
 
             foreach ($out in $job.Outputs) {
@@ -30,17 +42,18 @@ function Show-MGCompletionReport {
                 $ratio = ($out.Size / $job.SourceSize) * 100
                 $color = if ($ratio -lt 50) { 'green' } elseif ($ratio -lt 100) { 'yellow' } else { 'red' }
                 
-                $line = "    🔹 {0,-10} | {1,-10} | {2,-12} | {3:N2}%" -f $out.Format, $out.Range, $outSizeStr, $ratio
-                $statusLine = "║ $(ctstr "{ct:${color}:$line}")"
-                # Simple padding calculation
-                $paddingCount = 81 - [regex]::Replace($statusLine, '\e\[[0-9;]*m', '').Length
-                Write-Host "$statusLine" + (" " * $paddingCount) + "║" -ForegroundColor DarkMagenta
+                $lineRaw = "    🔹 {0,-10} | {1,-10} | {2,-12} | {3:N2}%" -f $out.Format, $out.Range, $outSizeStr, $ratio
+                $pad4 = 80 - $lineRaw.Length
+                $formattedLine = ctstr "{ct:${color}:$lineRaw}"
+                Write-Host "║ $formattedLine$(" " * $pad4)║" -ForegroundColor DarkMagenta
             }
             Write-Host "╟$Divider╢" -ForegroundColor DarkMagenta
         }
 
         $totalTime = "{0:N2}s" -f $Stats.TotalDuration
-        Write-Host "║ 🏁 $(ctstr "{ct:suc:b:Total Execution Time:}") $totalTime" + (" " * (54 - $totalTime.Length)) + "║" -ForegroundColor DarkMagenta
+        $timeRaw = " 🏁 Total Execution Time: $totalTime"
+        $pad5 = 80 - $timeRaw.Length
+        Write-Host "║ $(ctstr "{ct:suc:b:$timeRaw}")$(" " * $pad5)║" -ForegroundColor DarkMagenta
         Write-Host "╚$HBorder╝" -ForegroundColor DarkMagenta
         Write-Host ""
     }

@@ -45,39 +45,27 @@ Import-Module ./magicgester.psd1 -Force
 Generate multiple PNG and WebP variants from a single SVG source with auto-scaling:
 
 ```powershell
-$config = New-MGConfig -Source "./assets/logo.svg" -OutputDir "./dist" -AutoScale
-$config | Invoke-MagicGester
+mystro config -Source "./assets/logo.svg" -OutputDir "./dist" -AutoScale | mystro Gen
 ```
 
 ## **API Reference**
 
-### `New-MGConfig` (`mgconf`)
-Generates a structured configuration dataset for MagicGester asset pipelines.
-- **Parameters:**
-  - `-Source`: Path to source SVG or directory.
-  - `-OutputDir`: Root directory for outputs.
-  - `-Formats`: Target formats (default: png, ico, webp).
-  - `-AutoScale`: Automatically calculate resolutions while preserving aspect ratio.
+### `Invoke-Mystro` (`mystro`)
+The central routing interface for MagicGester asset generation. Supports multiple operational modes to encapsulate the toolkit's functionality.
 
-### `Invoke-MagicGester` (`mginv`)
-Executes the asset generation pipeline based on a configuration object.
-- **Parameters:**
-  - `-Config`: The config object (Accepts pipeline input).
-
-### `Get-MGImageInfo` (`mgeri`)
-Retrieves detailed metadata about an image file using ImageMagick.
-
-### `Show-MGMediaInfo` (`mginfo`)
-Displays TUI information about media formats and best use cases.
-
-### `New-MGRelease` (`mgls`)
-Automates the release process for CI/CD, including draft release notes.
+#### Modes:
+- **`config`**: Generates a structured configuration dataset. (Wraps `New-MGConfig`)
+- **`Gen`**: Executes the high-performance asset transformation pipeline. (Wraps `Invoke-MagicGester`)
+- **`minfo`**: Retrieves file metadata or displays format documentation. (Wraps `Get-MGImageInfo` and `Show-MGMediaInfo`)
+- **`MGI`**: Performs generic image resizing and compression. (Wraps `Invoke-MGImageProcessor`)
+- **`release`**: Automates CI/CD releases and draft notes. (Wraps `New-MGRelease`)
+- **`help`**: Displays the PHWriter TUI documentation.
 
 ## 📊 Media Information
 MagicGester includes a TUI-based information manager to help you choose the best formats for your needs:
 
 ```powershell
-Show-MGMediaInfo -Format webp
+mystro minfo -Format webp
 ```
 
 ---
