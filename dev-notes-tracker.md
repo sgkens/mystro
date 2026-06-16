@@ -99,9 +99,9 @@ MagicGester is evolving from a simple SVG export script into a **professional-gr
 ### **Refine Documentation (priority-8)**
 
 ### **Backlog**
-- [ ] 🟢 provide new helpers in the srcs helpers folder, `new-Asciicolor`, and `Get-terpal`, a more advance version of `new-asciicolor`, and also New-Spinner, perhaps create an additional helper call new-simplebar and use it to generate a ascii gradient bar, with borders complete, stage, and simple-trailog helper,  make new helpers rebusts so they can be taken out and use with other modules.
-- [ ] 🟢 We are not calculating length before ascii color encoding, this will break alignment and cause screen tears,
-- [ ] 🟢 We need to wrap
+- [x] 🟢🌟✅ **HELPERS** - Provide new helpers in the srcs helpers folder (`New-Asciicolor`, `terpal`, `New-Spinner`, `New-SimpleBar`). Make new helpers robust for external reuse.
+- [x] 🟢🌟✅ **UI** - We are not calculating length before ascii color encoding, this will break alignment and cause screen tears.
+- [x] 🟢🌟✅ **UI** - We need to wrap
 - [ ] 🟢 **avif** - support avif
 - [ ] 🟢 **all-image-media-formats** - support all
 - [ ] 🟢 `Show-MGMediaInfo` - pros should have info title 
