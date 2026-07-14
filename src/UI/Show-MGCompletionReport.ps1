@@ -15,32 +15,50 @@ function Show-MGCompletionReport {
 
         Write-Host ""
         Write-Host "╔$HBorder╗" -ForegroundColor DarkMagenta
-        Write-Host "║ $(ctstr '{ct:yellow:b:PIPELINE COMPLETION REPORT}')" + (" " * 53) + "║" -ForegroundColor DarkMagenta
+        
+        $titleRaw = "  PIPELINE COMPLETION REPORT"
+        $paddedTitle = Pad-AnsiString -Text (ctstr "{ct:yellow:b:$titleRaw}") -Width 80 -Align Left
+        Write-Host "║$paddedTitle║" -ForegroundColor DarkMagenta
         Write-Host "╠$HBorder╣" -ForegroundColor DarkMagenta
 
         foreach ($job in $Stats.Jobs) {
             $sourceSizeStr = Format-MGBytes -Bytes $job.SourceSize
-            Write-Host "║ 💠 Job: $(ctstr "{ct:cyan:b:$($job.Name)}")" + (" " * (70 - $job.Name.Length)) + "║" -ForegroundColor DarkMagenta
-            Write-Host "║    Source: $($job.Source)" + (" " * (71 - $job.Source.Length)) + "║" -ForegroundColor DarkMagenta
-            Write-Host "║    Size:   $sourceSizeStr" + (" " * (71 - $sourceSizeStr.Length)) + "║" -ForegroundColor DarkMagenta
+            
+            $jobText = ctstr "{ct:cyan:b: ◆ Job: $($job.Name)}"
+            $paddedJob = Pad-AnsiString -Text $jobText -Width 80 -Align Left
+            Write-Host "║$paddedJob║" -ForegroundColor DarkMagenta
+            
+            $srcText = "    Source: $($job.Source)"
+            $paddedSrc = Pad-AnsiString -Text $srcText -Width 80 -Align Left -Truncate:$true -TruncateSuffix "..."
+            Write-Host "║$paddedSrc║" -ForegroundColor DarkMagenta
+            
+            $sizeText = "    Size:   $sourceSizeStr"
+            $paddedSize = Pad-AnsiString -Text $sizeText -Width 80 -Align Left
+            Write-Host "║$paddedSize║" -ForegroundColor DarkMagenta
+            
             Write-Host "╟$Divider╢" -ForegroundColor DarkMagenta
 
             foreach ($out in $job.Outputs) {
+                # Skip failed generation outputs to avoid displaying 0 B / 0.00%
+                if ($out.Status -eq 'Failed') {
+                    continue
+                }
                 $outSizeStr = Format-MGBytes -Bytes $out.Size
                 $ratio = ($out.Size / $job.SourceSize) * 100
                 $color = if ($ratio -lt 50) { 'green' } elseif ($ratio -lt 100) { 'yellow' } else { 'red' }
                 
-                $line = "    🔹 {0,-10} | {1,-10} | {2,-12} | {3:N2}%" -f $out.Format, $out.Range, $outSizeStr, $ratio
-                $statusLine = "║ $(ctstr "{ct:${color}:$line}")"
-                # Simple padding calculation
-                $paddingCount = 81 - [regex]::Replace($statusLine, '\e\[[0-9;]*m', '').Length
-                Write-Host "$statusLine" + (" " * $paddingCount) + "║" -ForegroundColor DarkMagenta
+                $lineRaw = "    ▪ {0,-10} | {1,-10} | {2,-12} | {3:N2}%" -f $out.Format, $out.Range, $outSizeStr, $ratio
+                $formattedLine = ctstr "{ct:${color}:$lineRaw}"
+                $paddedOut = Pad-AnsiString -Text $formattedLine -Width 80 -Align Left
+                Write-Host "║$paddedOut║" -ForegroundColor DarkMagenta
             }
             Write-Host "╟$Divider╢" -ForegroundColor DarkMagenta
         }
 
         $totalTime = "{0:N2}s" -f $Stats.TotalDuration
-        Write-Host "║ 🏁 $(ctstr "{ct:suc:b:Total Execution Time:}") $totalTime" + (" " * (54 - $totalTime.Length)) + "║" -ForegroundColor DarkMagenta
+        $timeText = ctstr "{ct:green:b: ▶ Total Execution Time: $totalTime}"
+        $paddedTime = Pad-AnsiString -Text $timeText -Width 80 -Align Left
+        Write-Host "║$paddedTime║" -ForegroundColor DarkMagenta
         Write-Host "╚$HBorder╝" -ForegroundColor DarkMagenta
         Write-Host ""
     }

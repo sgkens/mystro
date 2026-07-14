@@ -2,6 +2,9 @@ using module .\cmdlets\New-Paragraph.psm1
 using module .\cmdlets\Format-StringWithCharSpacesAndHyphens.psm1
 using module .\cmdlets\New-ColorConsole.psm1
 
+# Enable UTF-8 Encoding
+$OutputEncoding = [Console]::InputEncoding = [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+
 $script:__phwriter = @{
     rootpath = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 }

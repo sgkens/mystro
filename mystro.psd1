@@ -1,29 +1,21 @@
 @{
-    RootModule         = 'magicgester.psm1'
+    RootModule         = 'mystro.psm1'
     ModuleVersion      = '0.2.0'
     GUID               = '7419527a-be12-42d4-910f-b26e8027a3c1'
     Author             = 'Garvey k. Snow'
     CompanyName        = 'Phellams'
     Copyright          = '(c) 2025 Garvey k. Snow. All rights reserved.'
-    Description        = 'High-Performance Asset Generation & Management Engine for automated SVG-to-multi-format pipelines.'
+    Description        = 'Asset Generation & Management Engine for automated SVG-to-multi-format pipelines.'
     
     FunctionsToExport  = @(
-        'New-MGConfig',
-        'Invoke-MagicGester',
-        'Get-MGImageInfo',
-        'Show-MGMediaInfo',
-        'New-MGRelease'
+        'Invoke-Mystro'
     )
     
     CmdletsToExport    = @()
     VariablesToExport  = @()
     
     AliasesToExport    = @(
-        'mgconf',
-        'mginv',
-        'mgeri',
-        'mginfo',
-        'mgls'
+        'mystro'
     )
     
     PrivateData        = @{
@@ -49,7 +41,7 @@
             bugTrackerUrl            = 'https://gitlab.kenscloud.online/phallems/glvigor/-/issues'
             Summary                  = 'Automated high-speed asset generation pipeline.'
             # CHOCOLATE ---------------------
-            Prerelease               = 'alpha1'
+            Prerelease               = ''
         }        
     }
     

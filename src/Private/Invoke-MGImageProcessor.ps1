@@ -111,7 +111,7 @@ function Invoke-MGImageProcessor {
             }
         }
         catch {
-            Write-LazyLog -Level err -Title "Failure" -Message "Processing failed for $Source: $($_.Exception.Message)"
+            Write-LazyLog -Level err -Title "Failure" -Message "Processing failed for ${Source}: $($_.Exception.Message)"
         }
     }
 }

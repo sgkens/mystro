@@ -66,6 +66,7 @@ MagicGester is evolving from a simple SVG export script into a **professional-gr
 * [x] 🟢🌟✅3️⃣ **ARCH** - Add high-speed .NET file discovery for source directories.
 * [x] 🟢🌟✅3️⃣ **CI** - Implement automated CI/CD release wrapper (New-MGRelease).
 * [x] 🟢🌟✅3️⃣ **ARCH** - Integrated ZIP bundling for asset distribution.
+* [x] 🟢🌟✅3️⃣ **CI** - Implement Pester test suite for automated module validation.
 
 ### **Bug Fixes (priority-4)**
 * [x] 🟢🩹✅4️⃣ **UI** - Fixed variable interpolation and ValidateSet issues in TUI components.
@@ -84,18 +85,28 @@ MagicGester is evolving from a simple SVG export script into a **professional-gr
 * [x] 🟢🌟✅6️⃣ **CONFIG** - Standardize build process with Phellams build_config.json.
 
 ### **Refine Features (priority-7)**
+* [x] 🟢 lets change invoke-magicgester to invoke-mystro mystro, lets use this as the main router, 
+  ```
+  mystro mode params
+         help
+         Gen - Generate Assets
+         release - Perform release functions
+         minfo - media info
+         config(New-MGConfig) - lets also give the user a way to store this locally in ~/.phellams/mystro in json form
+         MGI - Media Image Proccessor.
 
+  ```
 ### **Refine Documentation (priority-8)**
 
 ### **Backlog**
-- [ ] 🟢 provide new helpers in the srcs helpers folder, `new-Asciicolor`, and `Get-terpal`, a more advance version of `new-asciicolor`, and also New-Spinner, perhaps create an additional helper call new-simplebar and use it to generate a ascii gradient bar, with borders complete, stage, and simple-trailog helper,  make new helpers rebusts so they can be taken out and use with other modules.
-- [ ] 🟢 We are not calculating length before ascii color encoding, this will break alignment and cause screen tears,
-- [ ] 🟢 We need to wrap
+- [x] 🟢🌟✅ **HELPERS** - Provide new helpers in the srcs helpers folder (`New-Asciicolor`, `terpal`, `New-Spinner`, `New-SimpleBar`). Make new helpers robust for external reuse.
+- [x] 🟢🌟✅ **UI** - We are not calculating length before ascii color encoding, this will break alignment and cause screen tears.
+- [x] 🟢🌟✅ **UI** - We need to wrap
 - [ ] 🟢 **avif** - support avif
 - [ ] 🟢 **all-image-media-formats** - support all
-- [ ] 🟢 `Show-MGMediaInfo` - pros should have info title 
-  - [ ]   `kvinc` lets ajust kvinc `INF|WRD` to take in a param and output it in same caps,
-  - [ ]  `wiki` - add a wiki link for each image type, or a better site if there is one.
+- [x] 🟢 `Show-MGMediaInfo` - pros should have info title 
+  - [x]   `kvinc` lets ajust kvinc `INF|WRD` to take in a param and output it in same caps,
+  - [x]  `wiki` - add a wiki link for each image type, or a better site if there is one.
 ### **Backlog**
 
 - [x] 🟢🌟✅ **RISIZE** - Any Extention and output resized to the target resolution.

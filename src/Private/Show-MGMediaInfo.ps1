@@ -25,30 +25,35 @@ function Show-MGMediaInfo {
                 BestFor = "Logos, icons, and images with transparency."
                 Pros = "Lossless compression, alpha channel support."
                 Cons = "Larger file sizes compared to lossy formats."
+                Wiki = "https://en.wikipedia.org/wiki/PNG"
             }
             webp = @{
                 Name = "WebP"
                 BestFor = "Modern web applications, high-performance sites."
                 Pros = "Superior compression (both lossy and lossless)."
                 Cons = "Older browser compatibility (mostly legacy now)."
+                Wiki = "https://en.wikipedia.org/wiki/WebP"
             }
             ico  = @{
                 Name = "Windows Icon"
                 BestFor = "Favicons, desktop icons."
                 Pros = "Supports multiple resolutions in one file."
                 Cons = "Limited to specific platforms/use-cases."
+                Wiki = "https://en.wikipedia.org/wiki/ICO_(file_format)"
             }
             jpg  = @{
                 Name = "Joint Photographic Experts Group"
                 BestFor = "Photographs and complex images."
                 Pros = "Highly adjustable compression, universal support."
                 Cons = "Lossy, no transparency."
+                Wiki = "https://en.wikipedia.org/wiki/JPEG"
             }
             svg  = @{
                 Name = "Scalable Vector Graphics"
                 BestFor = "Illustrations, icons, and diagrams."
                 Pros = "Resolution independent, editable via code/CSS."
                 Cons = "Can become complex and slow to render if overly detailed."
+                Wiki = "https://en.wikipedia.org/wiki/SVG"
             }
         }
     }
@@ -67,8 +72,9 @@ function Show-MGMediaInfo {
                 $item = $mediaData[$key]
                 Write-Host "`n💠 Format: $(ctstr "{ct:yellow:b:$($key.ToUpper())}") ($($item.Name))" -ForegroundColor DarkCyan
                 Write-Host "$(New-Kvinc -keyName 'Best For' -KeyValue $item.BestFor -type inf)"
-                Write-Host "$(New-Kvinc -keyName 'Pros' -KeyValue $item.Pros -type suc)"
+                Write-Host "$(New-Kvinc -keyName 'Pros' -KeyValue $item.Pros -type inf)"
                 Write-Host "$(New-Kvinc -keyName 'Cons' -KeyValue $item.Cons -type wrn)"
+                Write-Host "$(New-Kvinc -keyName 'Wiki' -KeyValue $item.Wiki -type inf)"
             }
         }
         Write-Host ""

@@ -6,7 +6,7 @@ function New-MGRelease {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     [Alias('mgls')]
     param(
-        [Parameter(Mandatory = $true, ParameterSetName = 'Default')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'Default')]
         [PSObject]$Config,
 
         [Parameter(ParameterSetName = 'Default')]
@@ -29,6 +29,14 @@ function New-MGRelease {
         }
 
         Write-LazyLog -Level inf -Title "CI" -Message "Starting Automated Release Pipeline..."
+        
+        if ($null -eq $Config) {
+            $Config = Get-MGLocalConfig
+            if ($null -eq $Config) {
+                Write-LazyLog -Level err -Title "Config" -Message "No configuration provided or found."
+                throw "Pipeline aborted: missing configuration."
+            }
+        }
         
         $stats = $Config | Invoke-MagicGester -ZipBundle:$ZipBundle
         

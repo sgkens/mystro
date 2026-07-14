@@ -6,7 +6,7 @@ function Invoke-MagicGester {
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     [Alias('mginv')]
     param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ParameterSetName = 'Default')]
+        [Parameter(Mandatory = $false, ValueFromPipeline = $true, ParameterSetName = 'Default')]
         [PSObject]$Config,
 
         [Parameter(ParameterSetName = 'Default')]
@@ -25,6 +25,14 @@ function Invoke-MagicGester {
         $global:__logging = $true
         Get-MGBanner
         Write-LazyLog -Level inf -Title "MagicGester" -Message "Initializing Pipeline..."
+        
+        if ($null -eq $Config) {
+            $Config = Get-MGLocalConfig
+            if ($null -eq $Config) {
+                Write-LazyLog -Level err -Title "Config" -Message "No configuration provided or found."
+                throw "Pipeline aborted: missing configuration."
+            }
+        }
         
         $env = Get-MGEnvironment
         if ($env.Status -ne 'Ready' -and -not $env.Details['Magick'].Found) {
@@ -55,8 +63,18 @@ function Invoke-MagicGester {
                 Outputs = @()
             }
 
-            foreach ($format in $job.Outputs.Keys) {
-                $ranges = $job.Outputs[$format]
+            $outputKeys = if ($job.Outputs -is [System.Collections.IDictionary]) {
+                $job.Outputs.Keys
+            } else {
+                $job.Outputs.psobject.Properties | ForEach-Object { $_.Name }
+            }
+
+            foreach ($format in $outputKeys) {
+                $ranges = if ($job.Outputs -is [System.Collections.IDictionary]) {
+                    $job.Outputs[$format]
+                } else {
+                    $job.Outputs.$format
+                }
                 $formatDir = Join-Path $Config.Metadata.OutputDir $format
                 
                 if (-not [System.IO.Directory]::Exists($formatDir)) {
@@ -81,7 +99,17 @@ function Invoke-MagicGester {
                         if ($range -eq 'original') {
                             Copy-Item -Path $job.SourceFile -Destination $outputPath -Force
                         } else {
-                            if ($format -eq 'ico') {
+                            if ($format -eq 'svg') {
+                                Copy-Item -Path $job.SourceFile -Destination $outputPath -Force
+                            } elseif ($format -eq 'png') {
+                                if ($inkscape) {
+                                    $width, $height = $range -split 'x'
+                                    & $inkscape --export-width=$width --export-height=$height --export-filename=$outputPath $job.SourceFile
+                                } else {
+                                    & $magick -background none -size $range $job.SourceFile $outputPath
+                                }
+                            } else {
+                                # Use temp PNG for webp, jpg, jpeg, ico, etc. to bypass buggy Inkscape extensions
                                 $tempPng = [System.IO.Path]::GetTempFileName() + ".png"
                                 if ($inkscape) {
                                     $width, $height = $range -split 'x'
@@ -91,15 +119,6 @@ function Invoke-MagicGester {
                                 }
                                 & $magick $tempPng $outputPath
                                 if (Test-Path $tempPng) { Remove-Item $tempPng -Force }
-                            } elseif ($format -eq 'svg') {
-                                Copy-Item -Path $job.SourceFile -Destination $outputPath -Force
-                            } else {
-                                if ($inkscape) {
-                                    $width, $height = $range -split 'x'
-                                    & $inkscape --export-width=$width --export-height=$height --export-filename=$outputPath $job.SourceFile
-                                } else {
-                                    & $magick -background none -size $range $job.SourceFile $outputPath
-                                }
                             }
                         }
                         

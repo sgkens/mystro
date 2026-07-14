@@ -10,8 +10,8 @@ function Show-MGTuiHelp {
     )
 
     process {
-        $root = $global:_magicgester.rootpath
-        $metadataFile = Join-Path $root "phwrite-metadata.ps1"
+        $root_path = $global:_magicgester.rootpath
+        $metadataFile = Join-Path $root_path "phwrite-metadata.ps1"
 
         if (-not (Test-Path $metadataFile)) {
             Write-Warning "Help metadata not found at $metadataFile"
@@ -28,12 +28,13 @@ function Show-MGTuiHelp {
             return
         }
 
-        New-PHWriter -Name "MagicGester" `
+        New-PHWriter -Name "mystro" `
                      -CommandInfo ([pscustomobject]$meta.commandinfo) `
                      -ParamTable $meta.paramtable `
                      -Examples $meta.examples `
                      -Version "0.2.0" `
                      -Padding 4 `
-                     -Indent 2
+                     -Indent 2 `
+                     -CustomLogo "MAGICGETER"
     }
 }
