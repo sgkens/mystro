@@ -4,7 +4,10 @@ function Get-MGEnvironment {
         Checks for the existence of required external dependencies.
     #>
     [CmdletBinding()]
-    param()
+    param(
+        [Parameter()]
+        [switch]$NoInstall
+    )
 
     process {
         $OSIsWindows = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)
@@ -23,6 +26,13 @@ function Get-MGEnvironment {
 
         foreach ($entry in $deps.GetEnumerator()) {
             $path = Get-Command $entry.Value -ErrorAction SilentlyContinue
+            if ($null -eq $path -and -not $NoInstall) {
+                $installed = Install-MGDependency -Name $entry.Key
+                if ($installed) {
+                    $path = Get-Command $entry.Value -ErrorAction SilentlyContinue
+                }
+            }
+
             if ($null -eq $path) {
                 $results.Status = 'Incomplete'
                 $results.Details[$entry.Key] = @{

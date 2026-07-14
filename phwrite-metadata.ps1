@@ -1,12 +1,12 @@
 # ==============================================================================
 # File: phwriter-metadata.ps1 (MagicGester V2)
 # ==============================================================================
-$source = "https://gitlab.kenscloud.online/phallems/glvigor.git"
+$source = "https://gitlab.com/phallems/mystro.git"
 $phwriter_metadata_array = @(
     @{
         commandinfo = @{
-            cmdlet      = "Invoke-Mystro"
-            synopsis    = "Invoke-Mystro -Mode <String> [Options]"
+            cmdlet      = "mystro (Invoke-Mystro)"
+            synopsis    = "mystro -Mode <String> [Options]"
             description = "The central routing interface for MagicGester asset generation, offering 'config', 'Gen', 'release', 'minfo', and 'MGI' modes."
             source      = $source
         }

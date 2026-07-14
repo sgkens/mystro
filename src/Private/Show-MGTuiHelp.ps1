@@ -28,7 +28,7 @@ function Show-MGTuiHelp {
             return
         }
 
-        New-PHWriter -Name "MagicGester" `
+        New-PHWriter -Name "mystro" `
                      -CommandInfo ([pscustomobject]$meta.commandinfo) `
                      -ParamTable $meta.paramtable `
                      -Examples $meta.examples `

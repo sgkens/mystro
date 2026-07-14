@@ -104,9 +104,9 @@ MagicGester is evolving from a simple SVG export script into a **professional-gr
 - [x] 🟢🌟✅ **UI** - We need to wrap
 - [ ] 🟢 **avif** - support avif
 - [ ] 🟢 **all-image-media-formats** - support all
-- [ ] 🟢 `Show-MGMediaInfo` - pros should have info title 
-  - [ ]   `kvinc` lets ajust kvinc `INF|WRD` to take in a param and output it in same caps,
-  - [ ]  `wiki` - add a wiki link for each image type, or a better site if there is one.
+- [x] 🟢 `Show-MGMediaInfo` - pros should have info title 
+  - [x]   `kvinc` lets ajust kvinc `INF|WRD` to take in a param and output it in same caps,
+  - [x]  `wiki` - add a wiki link for each image type, or a better site if there is one.
 ### **Backlog**
 
 - [x] 🟢🌟✅ **RISIZE** - Any Extention and output resized to the target resolution.

@@ -9,7 +9,7 @@
     </p>
     <hr>
     <p>A <b>PowerShell</b> module for automated SVG-to-multi-format asset pipelines.</p>
-    <p>🚨 <strong>Requirements:</strong> ImageMagick (Required), Inkscape (Recommended for Vector fidelity).</p>
+    <p>🚨 <strong>Requirements:</strong> ImageMagick (Required), Inkscape (Recommended for Vector fidelity), Python 3 + pip + tinycss2 + Pillow (Required for Inkscape raster export extensions).</p>
     <small>Available on <strong>Linux</strong> , <strong>Windows</strong>, and <strong>macOS</strong></small>
     <br>
     <span>
@@ -69,7 +69,7 @@ Invoke-Mystro [-Mode] <String> [[-Config] <PSObject>] [-Source <String>]
 
 | **Parameter** | **Type** | **Required** | **Default** | **Validation** | **Description** |
 | --- | --- | --- | --- | --- | --- |
-| `Mode` | `String` | True | None | `help, Gen, release, minfo, config, MGI` | The operational mode to execute. |
+| `Mode` | `String` | True | None | `help, Gen, release, minfo, config, MGI, about, edit, view` | The operational mode to execute. |
 | `Config` | `PSObject` | False | None | None | Pipeline configuration object (required for `Gen` and `release`). |
 | `Source` | `String` | False | None | None | Path to the source file or directory. |
 | `OutputDir` | `String` | False | None | None | Destination directory for generated or processed assets. |
@@ -90,6 +90,9 @@ Invoke-Mystro [-Mode] <String> [[-Config] <PSObject>] [-Source <String>]
 - `minfo`: Retrieves file metadata or displays format documentation. (Wraps `Get-MGImageInfo` and `Show-MGMediaInfo`)
 - `MGI`: Performs generic image resizing and compression. (Wraps `Invoke-MGImageProcessor`)
 - `release`: Automates CI/CD releases and draft notes. (Wraps `New-MGRelease`)
+- `about`: Displays a diagnostic view of System, PowerShell, Module, and dependency version mappings. (Wraps `Show-MGAbout`)
+- `edit`: Opens the vector source SVG file in the Inkscape GUI editor. (Wraps `Start-MGEditor`)
+- `view`: Opens the generated target image in the system's default image viewer. (Wraps `Start-MGViewer`)
 - `help`: Displays the PHWriter TUI documentation.
 
 ## 📊 Media Information

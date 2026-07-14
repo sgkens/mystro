@@ -7,7 +7,7 @@ function Invoke-Mystro {
     [Alias('mystro')]
     param(
         [Parameter(Mandatory = $true, Position = 0, ParameterSetName = 'Default')]
-        [ValidateSet('help', 'Gen', 'release', 'minfo', 'config', 'MGI')]
+        [ValidateSet('help', 'Gen', 'release', 'minfo', 'config', 'MGI', 'about', 'edit', 'view')]
         [string]$Mode,
 
         [Parameter(ValueFromPipeline = $true, ParameterSetName = 'Default')]
@@ -98,13 +98,23 @@ function Invoke-Mystro {
             }
             'Gen' {
                 if (-not $forwardArgs.ContainsKey('Config')) {
-                    throw "Config object is required for Gen mode. Provide it via pipeline or -Config parameter."
+                    $localCfg = Get-MGLocalConfig
+                    if ($null -ne $localCfg) {
+                        $forwardArgs['Config'] = $localCfg
+                    } else {
+                        throw "Config object is required for Gen mode. Provide it via pipeline, -Config parameter, or save a local config using 'mystro config -SaveLocal'."
+                    }
                 }
                 return Invoke-MagicGester @forwardArgs
             }
             'release' {
                 if (-not $forwardArgs.ContainsKey('Config')) {
-                    throw "Config object is required for release mode."
+                    $localCfg = Get-MGLocalConfig
+                    if ($null -ne $localCfg) {
+                        $forwardArgs['Config'] = $localCfg
+                    } else {
+                        throw "Config object is required for release mode. Provide it via -Config parameter, or save a local config using 'mystro config -SaveLocal'."
+                    }
                 }
                 return New-MGRelease @forwardArgs
             }
@@ -117,6 +127,15 @@ function Invoke-Mystro {
             }
             'MGI' {
                 return Invoke-MGImageProcessor @forwardArgs
+            }
+            'about' {
+                Show-MGAbout
+            }
+            'edit' {
+                Start-MGEditor @forwardArgs
+            }
+            'view' {
+                Start-MGViewer @forwardArgs
             }
         }
     }

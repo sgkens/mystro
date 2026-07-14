@@ -1,6 +1,18 @@
 # **CHANGELOG**
 
-## 🧿 v1.0.0-tc1
+## 🧿 v0.3.0
+
+- Added `edit` and `view` modes to Invoke-Mystro (`mystro`).
+  - `mystro edit` opens the vector source SVG file in the Inkscape GUI editor.
+  - `mystro view` opens the generated target image in the system's default image viewer.
+- Enhanced dependency routing in the pipeline:
+  - Non-PNG raster exports (WebP, JPG, ICO) are now routed through a temporary PNG + ImageMagick fallback, bypassing unstable/broken Inkscape Python extensions.
+- Added `about` mode versions of Python, Pip, TinyCSS2, and Pillow to show all runtime requirements.
+- Standardized visual borders, aligning fonts and layout to prevent terminal screen tearing.
+- Replaced double-width emojis with safe single-width unicode block shapes.
+- Renamed "High-Performance Asset Engine" to "Mystro Asset Engine".
+
+## 🧿 v0.2.0-alpha
 
 - MagicGester V2 transforms the project from a collection of export scripts into a professional-grade asset 
 generation engine.
