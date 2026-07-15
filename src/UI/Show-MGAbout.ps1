@@ -12,7 +12,7 @@ function Get-InkscapeVersion {
             return "Error retrieving version"
         }
     }
-    return "Not Found"
+    return "not found"
 }
 
 function Get-ImageMagickVersion {
@@ -29,7 +29,7 @@ function Get-ImageMagickVersion {
             return "Error retrieving version"
         }
     }
-    return "Not Found"
+    return "not found"
 }
 
 function Show-MGAbout {
@@ -53,10 +53,10 @@ function Show-MGAbout {
         $magickVersion = Get-ImageMagickVersion
 
         # Check python and sub-dependencies
-        $pythonVersion = "Not Found"
-        $pipVersion = "Not Found"
-        $tinycssVersion = "Not Found"
-        $pillowVersion = "Not Found"
+        $pythonVersion = "not found"
+        $pipVersion = "not found"
+        $tinycssVersion = "not found"
+        $pillowVersion = "not found"
 
         $sysPython = Get-Command /usr/bin/python3 -ErrorAction SilentlyContinue
         if ($null -eq $sysPython) { $sysPython = Get-Command python3 -ErrorAction SilentlyContinue }
@@ -126,7 +126,7 @@ function Show-MGAbout {
         )
 
         foreach ($row in $rows) {
-            $valColor = if ($row.Value -eq 'Not Found' -or $row.Value -like 'Error*') { 'red' } else { 'green' }
+            $valColor = if ($row.Value -eq 'not found' -or $row.Value -like 'Error*') { 'red' } else { 'green' }
             $lineRaw = "    ◆ {0,-25} : {1}" -f $row.Name, $row.Value
             $formattedLine = ctstr "{ct:${valColor}:$lineRaw}"
             $paddedLine = Pad-AnsiString -Text $formattedLine -Width 80 -Align Left
