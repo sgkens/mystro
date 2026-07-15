@@ -9,8 +9,9 @@
     </p>
     <hr>
 
-Automated asset generation and conversion in parallell.
-<br>    
+Automated asset generation and conversion in parallell, uses inkscape for vector fidelity, and imagemage for asset export supporting all formats, `.png`,`.wepb`
+
+<br> 
 <small>Available on <strong>Linux</strong> , <strong>Windows</strong>, and <strong>macOS</strong> via <kbd>PowerShell Core</kbd></small> 
 <br>
 <span>

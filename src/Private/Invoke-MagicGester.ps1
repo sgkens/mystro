@@ -242,38 +242,50 @@ function Invoke-MagicGester {
                             [void]$activeJobs.Remove($cj)
                         }
 
-                        # Redraw TUI dashboard in alternate buffer
-                        Write-Host -NoNewline "$esc[2J$esc[H"
-                        Write-Host "  Mystro Asset Engine - Parallel Pipeline" -ForegroundColor Cyan
-                        Write-Host "  ========================================================" -ForegroundColor Gray
-                        Write-Host "  Job: $($job.Name) ($($job.SourceFile))"
-                        Write-Host ""
+                        # Redraw TUI dashboard in alternate buffer (flicker-free)
+                        $sb = [System.Text.StringBuilder]::new()
+                        [void]$sb.Append("$esc[H") # Home cursor without clearing screen
+                        
+                        $escCyan = "$esc[36m"
+                        $escGray = "$esc[90m"
+                        $escYellow = "$esc[33m"
+                        $escGreen = "$esc[32m"
+                        $escReset = "$esc[0m"
+
+                        [void]$sb.AppendLine("  ${escCyan}Mystro Asset Engine - Parallel Pipeline${escReset}$esc[K")
+                        [void]$sb.AppendLine("  ${escGray}========================================================${escReset}$esc[K")
+                        [void]$sb.AppendLine("  Job: $($job.Name) ($($job.SourceFile))$esc[K")
+                        [void]$sb.AppendLine("$esc[K")
                         
                         $percent = [math]::Round(($completedCount / $totalCount) * 100)
                         $spinner = New-Spinner
                         $bar = New-Bar -Percent $percent -Width 30
-                        Write-Host "  Progress: $bar $percent% ($completedCount/$totalCount)"
-                        Write-Host ""
+                        [void]$sb.AppendLine("  Progress: $bar $percent% ($completedCount/$totalCount)$esc[K")
+                        [void]$sb.AppendLine("$esc[K")
 
-                        Write-Host "  Active Exports:" -ForegroundColor Yellow
+                        [void]$sb.AppendLine("  ${escYellow}Active Exports:${escReset}$esc[K")
                         if ($activeJobs.Count -eq 0) {
-                            Write-Host "    None" -ForegroundColor Gray
+                            [void]$sb.AppendLine("    None$esc[K")
                         } else {
                             foreach ($aj in $activeJobs) {
-                                Write-Host "    $spinner $($aj.Task.Format) $($aj.Task.Range) (Running...)"
+                                [void]$sb.AppendLine("    $spinner $($aj.Task.Format) $($aj.Task.Range) (Running...)$esc[K")
                             }
                         }
-                        Write-Host ""
+                        [void]$sb.AppendLine("$esc[K")
 
-                        Write-Host "  Recent Completed:" -ForegroundColor Green
+                        [void]$sb.AppendLine("  ${escGreen}Recent Completed:${escReset}$esc[K")
                         if ($completedLogs.Count -eq 0) {
-                            Write-Host "    None" -ForegroundColor Gray
+                            [void]$sb.AppendLine("    None$esc[K")
                         } else {
                             $startIdx = [math]::Max(0, $completedLogs.Count - 8)
                             for ($i = $startIdx; $i -lt $completedLogs.Count; $i++) {
-                                Write-Host $completedLogs[$i]
+                                [void]$sb.AppendLine("$($completedLogs[$i])$esc[K")
                             }
                         }
+                        # Clear everything below the current cursor to clean up any leftover lines
+                        [void]$sb.Append("$esc[J")
+
+                        Write-Host -NoNewline $sb.ToString()
 
                         if ($activeJobs.Count -gt 0) {
                             Start-Sleep -Milliseconds 100
