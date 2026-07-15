@@ -11,14 +11,10 @@ function Get-MGBanner {
 
     process {
         $ascii = @'
-  __  __             _         _____           _            
- |  \/  |           (_)       / ____|         | |           
- | \  / | __ _  __ _ _  ___  | |  __  ___  ___| |_ ___ _ __ 
- | |\/| |/ _` |/ _` | |/ __| | | |_ |/ _ \/ __| __/ _ \ '__|
- | |  | | (_| | (_| | | (__  | |__| |  __/\__ \ |_  __/ |   
- |_|  |_|\__,_|\__, |_|\___|  \_____|\___||___/\__\___|_|   
-                __/ |                                       
-               |___/                                        
+.-.   .-..-.  .-..----..---. .----.  .----. 
+|  `.'  | \ \/ /{ {__ {_   _}| {}  }/  {}  \
+| |\ /| |  }  { .-._} } | |  | .-. \\      /
+`-' ` `-'  `--' `----'  `-'  `-' `-' `----'                                     
 '@
 
         # Using Write-GradientAscii if available (true 2D gradients), else New-AsciiGradient, else fallback
@@ -35,7 +31,7 @@ function Get-MGBanner {
         }
 
         # Robust module version detection
-        $version = "0.2.0"
+        $version = (get-module -name 'mystro').version.tostring()
         $mod = Get-Module mystro
         if ($null -eq $mod) { $mod = Get-Module magicgester }
         if ($null -ne $mod) { $version = $mod.Version.ToString() }
