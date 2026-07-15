@@ -1,6 +1,6 @@
 <div align="center">
     <img src="https://gitlab.kenscloud.online/phallems/glvigor/-/blob/main/logo.svg" alt="MagicGester Logo" width="128">
-    <h1><strong>MagicGester</strong></h1>
+    <h1><strong>Mystro</strong></h1>
     <p><b>Asset Generation & Management Engine</b></p>
     <p>
         <a href="https://gitlab.kenscloud.online/phallems/glvigor/-/pipelines"><img src="https://gitlab.kenscloud.online/phallems/glvigor/badges/main/pipeline.svg" alt="Pipeline Status"></a>
