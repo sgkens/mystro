@@ -8,17 +8,24 @@
         <a href="https://gitlab.kenscloud.online/phallems/mystro"><img src="https://img.shields.io/badge/version-0.2.0-blue.svg" alt="Version"></a>
     </p>
     <hr>
-    <p>A <b>PowerShell</b> module for automated SVG-to-multi-format asset pipelines.</p>
-    <p>🚨 <strong>Requirements:</strong> ImageMagick (Required), Inkscape (Recommended for Vector fidelity), Python 3 + pip + tinycss2 + Pillow (Required for Inkscape raster export extensions).</p>
-    <small>Available on <strong>Linux</strong> , <strong>Windows</strong>, and <strong>macOS</strong></small>
-    <br>
-    <span>
-        <a href="https://gitlab.kenscloud.online/phallems/mystro"><b>GitLab</b></a> |
-        <a href="#api-reference"><b>API Reference</b></a> |
-        <a href="CHANGELOG.md"><b>Changelog</b></a>
-    </span>
-    <hr>
+
+Automated asset generation and conversion in parallell.
+<br>    
+<small>Available on <strong>Linux</strong> , <strong>Windows</strong>, and <strong>macOS</strong> via <kbd>PowerShell Core</kbd></small> 
+<br>
+<span>
+    <a href="https://gitlab.kenscloud.online/phallems/mystro"><b>GitLab</b></a> |
+    <a href="#api-reference"><b>API Reference</b></a> |
+    <a href="CHANGELOG.md"><b>Changelog</b></a>
+</span>
+<hr>
 </div>
+
+## **Dependancies**
+
+**(`Linux`):**  **ImageMagick** (*Required*), **Inkscape** (*Recommended for Vzector fidelity*), **Python 3** + **pip** + **tinycss2** + **Pillow** (*Required for Inkscape raster export extensions*).
+
+**(`Windows`)**:
 
 ## **Core Features**
 

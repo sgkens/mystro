@@ -52,231 +52,260 @@ function Invoke-MagicGester {
     process {
         if ($PSCmdlet.ParameterSetName -eq 'Help') { return }
 
-        foreach ($job in $Config.Jobs) {
-            Write-LazyLog -Level inf -Title "Job" -Message "Processing: $($job.Name)"
-            $sourceSize = (Get-Item $job.SourceFile).Length
-            
-            $jobStats = @{
-                Name       = $job.Name
-                Source     = $job.SourceFile
-                SourceSize = $sourceSize
-                Outputs    = @()
-            }
+        $esc = [char]27
+        # Switch to alternate screen buffer and hide cursor
+        Write-Host -NoNewline "$esc[?1049h$esc[?25l"
 
-            # Gather all tasks for this job
-            $tasks = [System.Collections.Generic.List[PSCustomObject]]::new()
-            $outputKeys = if ($job.Outputs -is [System.Collections.IDictionary]) {
-                $job.Outputs.Keys
-            } else {
-                $job.Outputs.psobject.Properties | ForEach-Object { $_.Name }
-            }
-
-            foreach ($format in $outputKeys) {
-                $ranges = if ($job.Outputs -is [System.Collections.IDictionary]) {
-                    $job.Outputs[$format]
-                } else {
-                    $job.Outputs.$format
-                }
-                $formatDir = Join-Path $Config.Metadata.OutputDir $format
+        try {
+            foreach ($job in $Config.Jobs) {
+                $sourceSize = (Get-Item $job.SourceFile).Length
                 
-                if (-not [System.IO.Directory]::Exists($formatDir)) {
-                    [System.IO.Directory]::CreateDirectory($formatDir) | Out-Null
+                $jobStats = @{
+                    Name       = $job.Name
+                    Source     = $job.SourceFile
+                    SourceSize = $sourceSize
+                    Outputs    = @()
                 }
 
-                foreach ($range in $ranges) {
-                    $outputPath = Join-Path $formatDir "$($job.Name)-$range.$format"
-                    [void]$tasks.Add([PSCustomObject]@{
-                        Format     = $format
-                        Range      = $range
-                        OutputPath = $outputPath
-                    })
+                # Gather all tasks for this job
+                $tasks = [System.Collections.Generic.List[PSCustomObject]]::new()
+                $outputKeys = if ($job.Outputs -is [System.Collections.IDictionary]) {
+                    $job.Outputs.Keys
+                } else {
+                    $job.Outputs.psobject.Properties | ForEach-Object { $_.Name }
                 }
-            }
 
-            $totalCount = $tasks.Count
-            $completedCount = 0
-            $results = [System.Collections.Generic.List[PSCustomObject]]::new()
-
-            if ($totalCount -gt 0) {
-                # Create and open the RunspacePool
-                $pool = [System.Management.Automation.Runspaces.RunspaceFactory]::CreateRunspacePool(1, 4)
-                $pool.Open()
-
-                $activeJobs = [System.Collections.Generic.List[hashtable]]::new()
-
-                # Start all tasks in the pool
-                foreach ($task in $tasks) {
-                    $ps = [System.Management.Automation.PowerShell]::Create()
-                    $ps.RunspacePool = $pool
+                foreach ($format in $outputKeys) {
+                    $ranges = if ($job.Outputs -is [System.Collections.IDictionary]) {
+                        $job.Outputs[$format]
+                    } else {
+                        $job.Outputs.$format
+                    }
+                    $formatDir = Join-Path $Config.Metadata.OutputDir $format
                     
-                    # Define script block to run inside the runspace
-                    [void]$ps.AddScript({
-                        param($task, $jobSourceFile, $inkscape, $magick)
+                    if (-not [System.IO.Directory]::Exists($formatDir)) {
+                        [System.IO.Directory]::CreateDirectory($formatDir) | Out-Null
+                    }
 
-                        $runProc = {
-                            param($exe, $argsList)
-                            $psi = [System.Diagnostics.ProcessStartInfo]::new()
-                            $psi.FileName = $exe
-                            foreach ($a in $argsList) { [void]$psi.ArgumentList.Add($a) }
-                            $psi.UseShellExecute = $false
-                            $psi.CreateNoWindow = $true
-                            $psi.RedirectStandardOutput = $true
-                            $psi.RedirectStandardError = $true
-                            $proc = [System.Diagnostics.Process]::Start($psi)
-                            $proc.WaitForExit()
-                            return [PSCustomObject]@{
-                                ExitCode = $proc.ExitCode
-                                Error = $proc.StandardError.ReadToEnd()
+                    foreach ($range in $ranges) {
+                        $outputPath = Join-Path $formatDir "$($job.Name)-$range.$format"
+                        [void]$tasks.Add([PSCustomObject]@{
+                            Format     = $format
+                            Range      = $range
+                            OutputPath = $outputPath
+                        })
+                    }
+                }
+
+                $totalCount = $tasks.Count
+                $completedCount = 0
+                $results = [System.Collections.Generic.List[PSCustomObject]]::new()
+                $completedLogs = [System.Collections.Generic.List[string]]::new()
+
+                if ($totalCount -gt 0) {
+                    # Create and open the RunspacePool
+                    $pool = [System.Management.Automation.Runspaces.RunspaceFactory]::CreateRunspacePool(1, 4)
+                    $pool.Open()
+
+                    $activeJobs = [System.Collections.Generic.List[hashtable]]::new()
+
+                    # Start all tasks in the pool
+                    foreach ($task in $tasks) {
+                        $ps = [System.Management.Automation.PowerShell]::Create()
+                        $ps.RunspacePool = $pool
+                        
+                        # Define script block to run inside the runspace
+                        [void]$ps.AddScript({
+                            param($task, $jobSourceFile, $inkscape, $magick)
+
+                            $runProc = {
+                                param($exe, $argsList)
+                                $psi = [System.Diagnostics.ProcessStartInfo]::new()
+                                $psi.FileName = $exe
+                                foreach ($a in $argsList) { [void]$psi.ArgumentList.Add($a) }
+                                $psi.UseShellExecute = $false
+                                $psi.CreateNoWindow = $true
+                                $psi.RedirectStandardOutput = $true
+                                $psi.RedirectStandardError = $true
+                                $proc = [System.Diagnostics.Process]::Start($psi)
+                                $proc.WaitForExit()
+                                return [PSCustomObject]@{
+                                    ExitCode = $proc.ExitCode
+                                    Error = $proc.StandardError.ReadToEnd()
+                                }
                             }
-                        }
 
-                        $outStat = @{
-                            Range    = $task.Range
-                            Format   = $task.Format
-                            Path     = $task.OutputPath
-                            Status   = 'Success'
-                            Size     = 0
-                            Duration = 0
-                            Error    = $null
-                        }
+                            $outStat = @{
+                                Range    = $task.Range
+                                Format   = $task.Format
+                                Path     = $task.OutputPath
+                                Status   = 'Success'
+                                Size     = 0
+                                Duration = 0
+                                Error    = $null
+                            }
 
-                        try {
-                            $timer = [System.Diagnostics.Stopwatch]::StartNew()
-                            
-                            if ($task.Range -eq 'original') {
-                                [System.IO.File]::Copy($jobSourceFile, $task.OutputPath, $true)
-                            } else {
-                                if ($task.Format -eq 'svg') {
+                            try {
+                                $timer = [System.Diagnostics.Stopwatch]::StartNew()
+                                
+                                if ($task.Range -eq 'original') {
                                     [System.IO.File]::Copy($jobSourceFile, $task.OutputPath, $true)
-                                } elseif ($task.Format -eq 'png') {
-                                    if ($inkscape) {
-                                        $width, $height = $task.Range -split 'x'
-                                        $res = &$runProc $inkscape @("--export-width=$width", "--export-height=$height", "--export-filename=$($task.OutputPath)", $jobSourceFile)
-                                        if ($res.ExitCode -ne 0) { throw "Inkscape failed: $($res.Error)" }
-                                    } else {
-                                        $res = &$runProc $magick @("-background", "none", "-size", $task.Range, $jobSourceFile, $task.OutputPath)
-                                        if ($res.ExitCode -ne 0) { throw "Magick failed: $($res.Error)" }
-                                    }
                                 } else {
-                                    $tempPng = [System.IO.Path]::GetTempFileName() + ".png"
-                                    try {
+                                    if ($task.Format -eq 'svg') {
+                                        [System.IO.File]::Copy($jobSourceFile, $task.OutputPath, $true)
+                                    } elseif ($task.Format -eq 'png') {
                                         if ($inkscape) {
                                             $width, $height = $task.Range -split 'x'
-                                            $res = &$runProc $inkscape @("--export-width=$width", "--export-height=$height", "--export-filename=$tempPng", $jobSourceFile)
+                                            $res = &$runProc $inkscape @("--export-width=$width", "--export-height=$height", "--export-filename=$($task.OutputPath)", $jobSourceFile)
                                             if ($res.ExitCode -ne 0) { throw "Inkscape failed: $($res.Error)" }
                                         } else {
-                                            $res = &$runProc $magick @("-background", "none", "-size", $task.Range, $jobSourceFile, $tempPng)
+                                            $res = &$runProc $magick @("-background", "none", "-size", $task.Range, $jobSourceFile, $task.OutputPath)
                                             if ($res.ExitCode -ne 0) { throw "Magick failed: $($res.Error)" }
                                         }
-                                        
-                                        $res = &$runProc $magick @($tempPng, $task.OutputPath)
-                                        if ($res.ExitCode -ne 0) { throw "Magick conversion failed: $($res.Error)" }
-                                    } finally {
-                                        if ([System.IO.File]::Exists($tempPng)) {
-                                            [System.IO.File]::Delete($tempPng)
+                                    } else {
+                                        $tempPng = [System.IO.Path]::GetTempFileName() + ".png"
+                                        try {
+                                            if ($inkscape) {
+                                                $width, $height = $task.Range -split 'x'
+                                                $res = &$runProc $inkscape @("--export-width=$width", "--export-height=$height", "--export-filename=$tempPng", $jobSourceFile)
+                                                if ($res.ExitCode -ne 0) { throw "Inkscape failed: $($res.Error)" }
+                                            } else {
+                                                $res = &$runProc $magick @("-background", "none", "-size", $task.Range, $jobSourceFile, $tempPng)
+                                                if ($res.ExitCode -ne 0) { throw "Magick failed: $($res.Error)" }
+                                            }
+                                            
+                                            $res = &$runProc $magick @($tempPng, $task.OutputPath)
+                                            if ($res.ExitCode -ne 0) { throw "Magick conversion failed: $($res.Error)" }
+                                        } finally {
+                                            if ([System.IO.File]::Exists($tempPng)) {
+                                                [System.IO.File]::Delete($tempPng)
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            
-                            $timer.Stop()
-                            
-                            if ([System.IO.File]::Exists($task.OutputPath)) {
-                                $outStat.Size = [System.IO.FileInfo]::new($task.OutputPath).Length
-                                $outStat.Duration = $timer.Elapsed.TotalSeconds
-                            } else {
-                                throw "Output file not found after generation."
-                            }
-                        } catch {
-                            $outStat.Status = 'Failed'
-                            $outStat.Error = $_.Exception.Message
-                        }
-
-                        return [PSCustomObject]$outStat
-                    })
-
-                    [void]$ps.AddArgument($task)
-                    [void]$ps.AddArgument($job.SourceFile)
-                    [void]$ps.AddArgument($inkscape)
-                    [void]$ps.AddArgument($magick)
-
-                    $handle = $ps.BeginInvoke()
-                    [void]$activeJobs.Add(@{
-                        PowerShell = $ps
-                        Handle     = $handle
-                        Task       = $task
-                    })
-                }
-
-                $esc = [char]27
-                # Loop to monitor jobs and print live status
-                while ($activeJobs.Count -gt 0) {
-                    $completedThisIter = @()
-
-                    # Check for completed runspaces
-                    foreach ($aj in $activeJobs) {
-                        if ($aj.Handle.IsCompleted) {
-                            $resList = $aj.PowerShell.EndInvoke($aj.Handle)
-                            $res = $resList[0]
-                            
-                            # Clear status line and write the completion log in-place
-                            Write-Host -NoNewline "`r$esc[2K"
-                            if ($res.Status -eq 'Success') {
-                                Write-LazyLog -Level suc -Title "Success" -Message "Generated: $([System.IO.Path]::GetFileName($res.Path)) [$($res.Size) bytes]"
-                            } else {
-                                Write-LazyLog -Level err -Title "Failure" -Message "Export failed for $($job.Name) [$($res.Range)]: $($res.Error)"
+                                
+                                $timer.Stop()
+                                
+                                if ([System.IO.File]::Exists($task.OutputPath)) {
+                                    $outStat.Size = [System.IO.FileInfo]::new($task.OutputPath).Length
+                                    $outStat.Duration = $timer.Elapsed.TotalSeconds
+                                } else {
+                                    throw "Output file not found after generation."
+                                }
+                            } catch {
+                                $outStat.Status = 'Failed'
+                                $outStat.Error = $_.Exception.Message
                             }
 
-                            [void]$results.Add($res)
-                            $completedCount++
-                            $completedThisIter += $aj
-                        }
+                            return [PSCustomObject]$outStat
+                        })
+
+                        [void]$ps.AddArgument($task)
+                        [void]$ps.AddArgument($job.SourceFile)
+                        [void]$ps.AddArgument($inkscape)
+                        [void]$ps.AddArgument($magick)
+
+                        $handle = $ps.BeginInvoke()
+                        [void]$activeJobs.Add(@{
+                            PowerShell = $ps
+                            Handle     = $handle
+                            Task       = $task
+                        })
                     }
 
-                    # Remove completed runspaces
-                    foreach ($cj in $completedThisIter) {
-                        $cj.PowerShell.Dispose()
-                        [void]$activeJobs.Remove($cj)
-                    }
+                    # Loop to monitor jobs and print live status
+                    while ($activeJobs.Count -gt 0) {
+                        $completedThisIter = @()
 
-                    if ($activeJobs.Count -gt 0) {
-                        # Render progress bar & spinner
+                        # Check for completed runspaces
+                        foreach ($aj in $activeJobs) {
+                            if ($aj.Handle.IsCompleted) {
+                                $resList = $aj.PowerShell.EndInvoke($aj.Handle)
+                                $res = $resList[0]
+                                
+                                # Add to completed logs list
+                                if ($res.Status -eq 'Success') {
+                                    $completedLogs.Add("  [✔] Generated: $($res.Format) $($res.Range) ($([System.IO.Path]::GetFileName($res.Path))) [$($res.Size) B]")
+                                } else {
+                                    $completedLogs.Add("  [✘] Failed: $($res.Format) $($res.Range) - $($res.Error)")
+                                }
+
+                                [void]$results.Add($res)
+                                $completedCount++
+                                $completedThisIter += $aj
+                            }
+                        }
+
+                        # Remove completed runspaces
+                        foreach ($cj in $completedThisIter) {
+                            $cj.PowerShell.Dispose()
+                            [void]$activeJobs.Remove($cj)
+                        }
+
+                        # Redraw TUI dashboard in alternate buffer
+                        Write-Host -NoNewline "$esc[2J$esc[H"
+                        Write-Host "  Mystro Asset Engine - Parallel Pipeline" -ForegroundColor Cyan
+                        Write-Host "  ========================================================" -ForegroundColor Gray
+                        Write-Host "  Job: $($job.Name) ($($job.SourceFile))"
+                        Write-Host ""
+                        
                         $percent = [math]::Round(($completedCount / $totalCount) * 100)
                         $spinner = New-Spinner
-                        $bar = New-Bar -Percent $percent -Width 20
-                        
-                        $runningTaskNames = ($activeJobs | ForEach-Object { "$($_.Task.Format):$($_.Task.Range)" }) -join ", "
-                        $statusLine = "  $spinner Processing: $bar $percent% ($completedCount/$totalCount) | Active: $runningTaskNames"
-                        Write-Host -NoNewline "`r$esc[2K$statusLine"
-                        
-                        Start-Sleep -Milliseconds 100
+                        $bar = New-Bar -Percent $percent -Width 30
+                        Write-Host "  Progress: $bar $percent% ($completedCount/$totalCount)"
+                        Write-Host ""
+
+                        Write-Host "  Active Exports:" -ForegroundColor Yellow
+                        if ($activeJobs.Count -eq 0) {
+                            Write-Host "    None" -ForegroundColor Gray
+                        } else {
+                            foreach ($aj in $activeJobs) {
+                                Write-Host "    $spinner $($aj.Task.Format) $($aj.Task.Range) (Running...)"
+                            }
+                        }
+                        Write-Host ""
+
+                        Write-Host "  Recent Completed:" -ForegroundColor Green
+                        if ($completedLogs.Count -eq 0) {
+                            Write-Host "    None" -ForegroundColor Gray
+                        } else {
+                            $startIdx = [math]::Max(0, $completedLogs.Count - 8)
+                            for ($i = $startIdx; $i -lt $completedLogs.Count; $i++) {
+                                Write-Host $completedLogs[$i]
+                            }
+                        }
+
+                        if ($activeJobs.Count -gt 0) {
+                            Start-Sleep -Milliseconds 100
+                        }
                     }
+
+                    $pool.Close()
+                    $pool.Dispose()
                 }
 
-                # Final line clear when all tasks finish
-                Write-Host -NoNewline "`r$esc[2K"
+                # Map the results to jobStats for telemetry report
+                foreach ($res in $results) {
+                    $outStat = @{
+                        Range    = $res.Range
+                        Format   = $res.Format
+                        Path     = $res.Path
+                        Status   = $res.Status
+                        Size     = $res.Size
+                        Duration = $res.Duration
+                    }
+                    if ($res.Status -eq 'Failed') {
+                        $outStat['Error'] = $res.Error
+                    }
+                    $jobStats.Outputs += $outStat
+                }
 
-                $pool.Close()
-                $pool.Dispose()
+                $stats.Jobs += $jobStats
             }
-
-            # Map the results to jobStats for telemetry report
-            foreach ($res in $results) {
-                $outStat = @{
-                    Range    = $res.Range
-                    Format   = $res.Format
-                    Path     = $res.Path
-                    Status   = $res.Status
-                    Size     = $res.Size
-                    Duration = $res.Duration
-                }
-                if ($res.Status -eq 'Failed') {
-                    $outStat['Error'] = $res.Error
-                }
-                $jobStats.Outputs += $outStat
-            }
-
-            $stats.Jobs += $jobStats
+        }
+        finally {
+            # Restore cursor and switch back to main screen buffer
+            Write-Host -NoNewline "$esc[?25h$esc[?1049l"
         }
     }
 
