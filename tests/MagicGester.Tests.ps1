@@ -91,4 +91,36 @@ Describe "MagicGester V2 Test Suite" {
             { mystro minfo -Format "png" } | Should -Not -Throw
         }
     }
+
+    Context "mystro TUI Helpers" {
+        It "Should generate stateful spinner characters and colorize them" {
+            InModuleScope mystro {
+                New-Spinner -Reset
+                
+                $s1 = New-Spinner
+                $s2 = New-Spinner
+                
+                $s1 | Should -Not -BeNullOrEmpty
+                $s2 | Should -Not -BeNullOrEmpty
+                $s1 | Should -Not -Be $s2
+            }
+        }
+
+        It "Should generate progress bars of correct length and apply colorization" {
+            InModuleScope mystro {
+                $bar = New-Bar -Percent 50 -Width 30
+                $bar | Should -Not -BeNullOrEmpty
+                $bar | Should -Match '\[38;2;'
+            }
+        }
+
+        It "Should tokenize single lines correctly without array indexing errors" {
+            InModuleScope mystro {
+                { ConvertTo-AsciiTokens -Lines @("test") } | Should -Not -Throw
+                $tokens = ConvertTo-AsciiTokens -Lines @("test")
+                $tokens.Width | Should -Be 4
+                $tokens.Height | Should -Be 1
+            }
+        }
+    }
 }
