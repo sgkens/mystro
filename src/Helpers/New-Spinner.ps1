@@ -1,56 +1,31 @@
-# -----------------------------------------------------------------------------
-# STATEFUL SPINNER HELPER
-# -----------------------------------------------------------------------------
-
-# Initialize script-scope counter (persists as long as module is imported)
-$script:PwslSpinnerIdx = 0
-
 function New-Spinner {
     <#
     .SYNOPSIS
-        Returns the next character in a spinner sequence.
-        Maintains state automatically using a script-level variable.
+        Generates a stateful colorized spinner character using asciitokenizer logic.
     #>
     [CmdletBinding()]
     param(
-        # The animation frames. Defaults to standard ASCII.
-        [parameter(mandatory=$true)]
-        [string[]]$Steps,
+        [string[]]$Steps = @('⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'),
+        [int[]]$StartColor = @(0, 150, 255),
+        [int[]]$EndColor   = @(255, 0, 150),
         [switch]$Reset
     )
 
-    begin {
-        if(!$steps){
-            $steps = @('-', '\', '|', '/')
-        }
-        if($steps.count -lt 2){
-            return "String array <= 2 please expand the array length";
-        }
-        if($reset){
-            $script:PwslSpinnerIdx = 0
-            return
-        }
+    if ($Reset) {
+        $script:PwslSpinnerIdx = 0
+        return
     }
 
-    process {
-
-        # 1. Calculate current frame based on script-level index
-        $currentIndex = $script:PwslSpinnerIdx % $Steps.Count
-        $char = $Steps[$currentIndex]
-
-        # 2. Increment global index for the next call
-        $script:PwslSpinnerIdx++
-
-        # 3. Return the raw string/char
-        return $char
+    if ($null -eq $script:PwslSpinnerIdx) {
+        $script:PwslSpinnerIdx = 0
     }
-}
 
-$cmdlet_config = @{
-    function = @( 
-        'New-Spinner'
-    )
-    alias  =@()
-}
+    $frame = $Steps[$script:PwslSpinnerIdx % $Steps.Count]
+    $script:PwslSpinnerIdx++
 
-Export-ModuleMember @cmdlet_config
+    # Tokenize and colorize using asciitokenizer logic
+    $tokens = ConvertTo-AsciiTokens -Lines @($frame)
+    $color = Get-GradientColor -T 0 -Start $StartColor -End $EndColor
+    $esc = [char]27
+    return "$esc[38;2;$color`m$frame$esc[0m"
+}

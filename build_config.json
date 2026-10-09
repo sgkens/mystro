@@ -1,6 +1,6 @@
 {
     "PSModule" :{
-        "modulename": "magicgester",
+        "modulename": "mystro",
         "releasetype": "public",
         "gituser": "sgkens",
         "gitgroup": "phellams",
@@ -14,8 +14,8 @@
             ".\\tests\\MagicGester.Tests.ps1"
         ],
         "modulefiles": [
-            "magicgester.psm1",
-            "magicgester.psd1",
+            "mystro.psm1",
+            "mystro.psd1",
             "LICENSE",
             "README.md"
         ],

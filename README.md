@@ -1,24 +1,32 @@
 <div align="center">
-    <img src="https://gitlab.kenscloud.online/phallems/glvigor/-/blob/main/logo.svg" alt="MagicGester Logo" width="128">
-    <h1><strong>MagicGester</strong></h1>
-    <p><b>Asset Generation & Management Engine</b></p>
+    <img src="https://gitlab.kenscloud.online/phallems/mystro/-/blob/main/logo.svg" alt="MagicGester Logo" width="128">
+    <h1><strong>Mystro</strong></h1>
+    <p><b>Asset Automation Engine</b></p>
     <p>
-        <a href="https://gitlab.kenscloud.online/phallems/glvigor/-/pipelines"><img src="https://gitlab.kenscloud.online/phallems/glvigor/badges/main/pipeline.svg" alt="Pipeline Status"></a>
+        <a href="https://gitlab.kenscloud.online/phallems/mystro/-/pipelines"><img src="https://gitlab.kenscloud.online/phallems/mystro/badges/main/pipeline.svg" alt="Pipeline Status"></a>
         <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License"></a>
-        <a href="https://gitlab.kenscloud.online/phallems/glvigor"><img src="https://img.shields.io/badge/version-0.2.0-blue.svg" alt="Version"></a>
+        <a href="https://gitlab.kenscloud.online/phallems/mystro"><img src="https://img.shields.io/badge/version-0.2.0-blue.svg" alt="Version"></a>
     </p>
     <hr>
-    <p>A <b>PowerShell</b> module for automated SVG-to-multi-format asset pipelines.</p>
-    <p>🚨 <strong>Requirements:</strong> ImageMagick (Required), Inkscape (Recommended for Vector fidelity), Python 3 + pip + tinycss2 + Pillow (Required for Inkscape raster export extensions).</p>
-    <small>Available on <strong>Linux</strong> , <strong>Windows</strong>, and <strong>macOS</strong></small>
-    <br>
-    <span>
-        <a href="https://gitlab.kenscloud.online/phallems/glvigor"><b>GitLab</b></a> |
-        <a href="#api-reference"><b>API Reference</b></a> |
-        <a href="CHANGELOG.md"><b>Changelog</b></a>
-    </span>
-    <hr>
+
+Automated asset generation and conversion in parallell, uses inkscape for vector fidelity, and imagemage for asset export supporting all formats, `.png`,`.wepb`
+
+<br> 
+<small>Available on <strong>Linux</strong> , <strong>Windows</strong>, and <strong>macOS</strong> via <kbd>PowerShell Core</kbd></small> 
+<br>
+<span>
+    <a href="https://gitlab.kenscloud.online/phallems/mystro"><b>GitLab</b></a> |
+    <a href="#api-reference"><b>API Reference</b></a> |
+    <a href="CHANGELOG.md"><b>Changelog</b></a>
+</span>
+<hr>
 </div>
+
+## **Dependancies**
+
+**(`Linux`):**  **ImageMagick** (*Required*), **Inkscape** (*Recommended for Vzector fidelity*), **Python 3** + **pip** + **tinycss2** + **Pillow** (*Required for Inkscape raster export extensions*).
+
+**(`Windows`)**:
 
 ## **Core Features**
 
@@ -34,7 +42,7 @@
 ### 1. Installation
 ```powershell
 # Clone the repository
-git clone https://gitlab.kenscloud.online/phallems/glvigor.git magicgester
+git clone https://gitlab.kenscloud.online/phallems/mystro.git magicgester
 cd magicgester
 
 # Import the module
@@ -116,9 +124,9 @@ This project follows strict **SemVer** versioning. For all releases, use the fol
 
 ## **Support**
 
-- 📝 [Documentation](https://gitlab.kenscloud.online/phallems/glvigor/-/wikis/home)
-- 🐛 [Issue Tracker](https://gitlab.kenscloud.online/phallems/glvigor/-/issues)
-- 💬 [Discussions](https://gitlab.kenscloud.online/phallems/glvigor/-/issues)
+- 📝 [Documentation](https://gitlab.kenscloud.online/phallems/mystro/-/wikis/home)
+- 🐛 [Issue Tracker](https://gitlab.kenscloud.online/phallems/mystro/-/issues)
+- 💬 [Discussions](https://gitlab.kenscloud.online/phallems/mystro/-/issues)
 
 ---
 

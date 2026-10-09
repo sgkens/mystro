@@ -1,5 +1,15 @@
 # **CHANGELOG**
 
+## 🧿 v0.7.0
+
+- Resolved race condition between Inkscape exports and ImageMagick conversions using synchronous `.NET` Process execution.
+- Implemented parallel asset generation using a robust `.NET` RunspacePool with dynamic progress feedback.
+- Added live full-screen TUI dashboard running inside the alternate screen buffer (`\e[?1049h`), with flicker-free cursor-homed redraws.
+- Created `New-Spinner` and `New-Bar` helpers utilizing 24-bit TrueColor gradients via the `asciitokenizer` engine.
+- Fixed a pipeline array unwrapping/indexing exception in the BFS flood fill tokenizer for single-line inputs.
+- Normalized diagnostics check inside `Show-MGAbout` to return lowercase `'not found'` for missing dependencies.
+- Updated `build_config.json` module configuration and version telemetry references.
+
 ## 🧿 v0.3.0
 
 - Added `edit` and `view` modes to Invoke-Mystro (`mystro`).

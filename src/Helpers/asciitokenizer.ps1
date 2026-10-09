@@ -55,10 +55,17 @@ function ConvertTo-AsciiTokens {
         [int]$Connectivity = 8
     )
 
-    $width  = ($Lines | Measure-Object -Property Length -Maximum).Maximum
-    if (-not $width) { $width = 0 }
-    $padded = $Lines | ForEach-Object { $_.PadRight($width) }
-    $height = $padded.Count
+    $lineArray = @($Lines)
+    $width = 0
+    foreach ($l in $lineArray) {
+        if ($l.Length -gt $width) { $width = $l.Length }
+    }
+
+    $padded = [string[]]::new($lineArray.Count)
+    for ($i = 0; $i -lt $lineArray.Count; $i++) {
+        $padded[$i] = $lineArray[$i].PadRight($width)
+    }
+    $height = $padded.Length
 
     $grid = New-Object 'char[][]' $height
     for ($y = 0; $y -lt $height; $y++) { $grid[$y] = $padded[$y].ToCharArray() }
