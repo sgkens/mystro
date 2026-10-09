@@ -1,197 +1,135 @@
-# MagicGester 
+<div align="center">
+    <img src="https://gitlab.kenscloud.online/phallems/mystro/-/blob/main/logo.svg" alt="MagicGester Logo" width="128">
+    <h1><strong>Mystro</strong></h1>
+    <p><b>Asset Automation Engine</b></p>
+    <p>
+        <a href="https://gitlab.kenscloud.online/phallems/mystro/-/pipelines"><img src="https://gitlab.kenscloud.online/phallems/mystro/badges/main/pipeline.svg" alt="Pipeline Status"></a>
+        <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License"></a>
+        <a href="https://gitlab.kenscloud.online/phallems/mystro"><img src="https://img.shields.io/badge/version-0.2.0-blue.svg" alt="Version"></a>
+    </p>
+    <hr>
 
-MagicGester is a ***PowerShell module*** that provides a number of cmdlets for exporting SVG files to various formats 🎬 (**PNG**, **ICO**, **JPG**, **TIFF**, **WEBP**, **PDF**) using specified ranges, and returning information about the exported files.
+Automated asset generation and conversion in parallell, uses inkscape for vector fidelity, and imagemage for asset export supporting all formats, `.png`,`.wepb`
 
-## 🏐 Installation
+<br> 
+<small>Available on <strong>Linux</strong> , <strong>Windows</strong>, and <strong>macOS</strong> via <kbd>PowerShell Core</kbd></small> 
+<br>
+<span>
+    <a href="https://gitlab.kenscloud.online/phallems/mystro"><b>GitLab</b></a> |
+    <a href="#api-reference"><b>API Reference</b></a> |
+    <a href="CHANGELOG.md"><b>Changelog</b></a>
+</span>
+<hr>
+</div>
 
-To install the module, run the following command in PowerShell:
+## **Dependancies**
 
+**(`Linux`):**  **ImageMagick** (*Required*), **Inkscape** (*Recommended for Vzector fidelity*), **Python 3** + **pip** + **tinycss2** + **Pillow** (*Required for Inkscape raster export extensions*).
+
+**(`Windows`)**:
+
+## **Core Features**
+
+- **Object-Oriented Pipeline:** Decoupled configuration engine (`New-MGConfig`) for high-speed batch processing.
+- **Intelligent Auto-Scaling:** Aspect-ratio preservation and automatic target resolution discovery.
+- **Unified Execution:** Robust transformation engine (`Invoke-MagicGester`) with intelligent dependency fallbacks.
+- **Retro-Modern TUI:** Handcrafted ANSI-driven feedback, real-time logging, and visual optimization reports.
+- **Telemetry-Rich:** Detailed metrics on source/target sizes and execution performance.
+- **CI/CD Ready:** Dedicated automation wrappers for seamless integration into production DevOps workflows.
+
+## **Quick Start**
+
+### 1. Installation
 ```powershell
-git clone https://github.com/sgkens/MagicGester.git
-cd MagicGester
-Import-Module .\
+# Clone the repository
+git clone https://gitlab.kenscloud.online/phallems/mystro.git magicgester
+cd magicgester
+
+# Import the module
+Import-Module ./magicgester.psd1 -Force
 ```
 
-## 🏐 Usage
-
-To use the module, import it in your PowerShell script:
-
-Once imported, you can use the cmdlets provided by the module. For example, to export an SVG file to PNG format in specified dimensions, you can use the `Export-SvgRanges` cmdlet:
-
-> SVG to PNG ranges example
-```powershell
-Export-SvgRanges -Source "master.svg" -Destination "output" -PngRanges @('16x16', '32x32', '64x64')
-```
-> SVG to JPG ranges example
-```powershell
-Export-SvgRanges -Source "master.svg" -Destination "output" -JpgRanges @('16x16', '32x32', '64x64')
-```
-
-> SVG to ICO ranges example - Max size is 256x256
-```powershell
-Export-SvgRanges -Source "master.svg" -Destination "output" -IcoRanges @('16x16', '32x32', '64x64')
-```
-
-> SVG to TIFF ranges example
-```powershell
-Export-SvgRanges -Source "master.svg" -Destination "output" -TiffRanges @('16x16', '32x32', '64x64')
-```
-
-> SVG to WEBP ranges example
-```powershell
-Export-SvgRanges -Source "master.svg" -Destination "output" -WebpRanges @('16x16', '32x32', '64x64')
-```
-
-> SVG to PDF ranges example
-```powershell
-Export-SvgRanges -Source "master.svg" -Destination "output" -PdfRanges @('16x16', '32x32', '64x64')
-```
-
-### ⚙ Export-SvgRanges
-
-The `Export-SvgRanges` cmdlet is used to export SVG files to various formats using specified ranges. It takes the following parameters:
-
-- `Source`: The path to the SVG file to be exported.
-- `Destination`: The path to the directory where the exported files will be saved.
-- `PngRanges`: An array of strings representing the ranges to be used for PNG export. Each range should be in the format "widthxheight" and should be separated by a comma.
-- `JpgRanges`: An array of strings representing the ranges to be used for JPG export. Each range should be in the format "widthxheight" and should be separated by a comma.
-- `IcoRanges`: An array of strings representing the ranges to be used for ICO export. Each range should be in the format "widthxheight" and should be separated by a comma.
-- `TiffRanges`: An array of strings representing the ranges to be used for TIFF export. Each range should be in the format "widthxheight" and should be separated by a comma.                             
-- `WebpRanges`: An array of strings representing the ranges to be used for WEBP export. Each range should be in the format "widthxheight" and should be separated by a comma.
-- `PdfRanges`: An array of strings representing the ranges to be used for PDF export. Each range should be in the format "widthxheight" and should be separated by a comma.
+### 2. Basic Usage
+Generate multiple PNG and WebP variants from a single SVG source with auto-scaling:
 
 ```powershell
-Export-SvgRanges -Source "master.svg"`
-                 -Destination "output"`
-                 -PngRanges @('16x16', '32x32', '96x96')`
-                 -JpgRanges @('16x16', '32x32', '64x64')`
-                 -IcoRanges @('16x16', '32x32', '64x64')`
-                 -TiffRanges @('16x16', '32x32', '64x64')`
-                 -WebpRanges @('16x16', '32x32', '64x64')`
-                 -PdfRanges @('16x16', '32x32', '1064x1064')
+mystro config -Source "./assets/logo.svg" -OutputDir "./dist" -AutoScale | mystro Gen
 ```
 
-Output:
+## **API Reference**
+
+### *💲Invoke-Mystro* (Alias: `mystro`)
+
+The central routing interface for MagicGester asset generation. Supports multiple operational modes to encapsulate the toolkit's functionality.
+
+**🔹Syntax:**
 
 ```powershell
-    ├ Output
-    │  ├ ico
-    │  │  ├ logo-v1-16x16.ico
-    │  │  ├ logo-v1-32x32.ico
-    │  │  ├ logo-v1-64x64.ico
-    │  │  └ logo-v1-256x256.ico
-    │  ├ jpg
-    │  │  ├ logo-v1-16x16.jpg
-    │  │  ├ logo-v1-32x32.jpg
-    │  │  ├ logo-v1-64x64.jpg
-    │  │  └ logo-v1-256x256.jpg
-    │  ├ pdf
-    │  │  ├ logo-v1-16x16.pdf
-    │  │  ├ logo-v1-32x32.pdf
-    │  │  ├ logo-v1-64x64.pdf
-    │  │  └ logo-v1-256x256.pdf
-    │  ├ png
-    │  │  ├ logo-v1-16x16.png
-    │  │  ├ logo-v1-32x32.png
-    │  │  ├ logo-v1-64x64.png
-    │  │  └ logo-v1-256x256.png
-    │  ├ svg
-    │  │  ├ logo-v1-16x16.svg
-    │  │  ├ logo-v1-32x32.svg
-    │  │  ├ logo-v1-64x64.svg
-    │  │  └ logo-v1-256x256.svg
-    │  ├ tiff
-    │  │  ├ logo-v1-16x16.tiff
-    │  │  ├ logo-v1-32x32.tiff
-    │  │  ├ logo-v1-64x64.tiff
-    │  │  └ logo-v1-256x256.tiff
-    │  └ webp
-    │     ├ logo-v1-16x16.webp
-    │     ├ logo-v1-32x32.webp
-    │     ├ logo-v1-64x64.webp
-    │     └ logo-v1-256x256.webp
+Invoke-Mystro [-Mode] <String> [[-Config] <PSObject>] [-Source <String>] 
+              [-OutputDir <String>] [-Format <String>] [-Formats <String[]>] 
+              [-PngRanges <String[]>] [-IcoRanges <String[]>] [-WebpRanges <String[]>] 
+              [-JpgRanges <String[]>] [-SvgRanges <String[]>] [-AutoScale] 
+              [-AsJson] [-SaveLocal] [-ZipBundle] [-Commit] [-Version <String>] 
+              [-Range <String>] [-Quality <Int32>] [-Help] [<CommonParameters>]
 ```
-This will export the SVG file to PNG, JPG, ICO, TIFF, WEBP, and PDF formats using the specified ranges.
 
-### ⚙ Get-ImageInfo
+**🔹Parameters**
 
-The `Get-ImageInfo` cmdlet is used to return information about the exported images. It takes the following parameters:
+| **Parameter** | **Type** | **Required** | **Default** | **Validation** | **Description** |
+| --- | --- | --- | --- | --- | --- |
+| `Mode` | `String` | True | None | `help, Gen, release, minfo, config, MGI, about, edit, view` | The operational mode to execute. |
+| `Config` | `PSObject` | False | None | None | Pipeline configuration object (required for `Gen` and `release`). |
+| `Source` | `String` | False | None | None | Path to the source file or directory. |
+| `OutputDir` | `String` | False | None | None | Destination directory for generated or processed assets. |
+| `Formats` | `String[]` | False | `@('png', 'ico', 'webp')` | None | Array of target formats to generate in `config` mode. |
+| `AutoScale` | `Switch` | False | False | None | Automatically calculate scaling ranges while preserving aspect ratio. |
+| `SaveLocal` | `Switch` | False | False | None | Saves the generated configuration JSON to `~/.phellams/mystro/config.json`. |
+| `ZipBundle` | `Switch` | False | False | None | Aggregates all generated outputs into a single, versioned ZIP archive. |
+| `Quality` | `Int32` | False | `85` | `1-100` | Target quality for raster compression in `MGI` mode. |
+| `Help` | `Switch` | False | False | None | Triggers the interactive TUI documentation via PHWriter. |
 
-- `SourcePath`: The path to the directory where the image file is located.
+**🔻Outputs**
+
+`System.Management.Automation.PSCustomObject`
+
+**Mode Breakdown:**
+- `config`: Generates a structured configuration dataset. (Wraps `New-MGConfig`)
+- `Gen`: Executes the high-performance asset transformation pipeline. (Wraps `Invoke-MagicGester`)
+- `minfo`: Retrieves file metadata or displays format documentation. (Wraps `Get-MGImageInfo` and `Show-MGMediaInfo`)
+- `MGI`: Performs generic image resizing and compression. (Wraps `Invoke-MGImageProcessor`)
+- `release`: Automates CI/CD releases and draft notes. (Wraps `New-MGRelease`)
+- `about`: Displays a diagnostic view of System, PowerShell, Module, and dependency version mappings. (Wraps `Show-MGAbout`)
+- `edit`: Opens the vector source SVG file in the Inkscape GUI editor. (Wraps `Start-MGEditor`)
+- `view`: Opens the generated target image in the system's default image viewer. (Wraps `Start-MGViewer`)
+- `help`: Displays the PHWriter TUI documentation.
+
+## 📊 Media Information
+MagicGester includes a TUI-based information manager to help you choose the best formats for your needs:
 
 ```powershell
-Get-ImageInfo -SourcePath ".\output\ico\logo-v1-16x16.ico"
+mystro minfo -Format webp
 ```
 
-Output:
+---
 
-```powershell
-white point        : (0.3127,0.329,0.3583)
-Gamma              : 0.454545
-Background color   : white
-Number pixels      : 256
-blue primary       : (0.15,0.06,0.79)
-Filename           : .\output\ico\logo-v1-16x16.ico
-Page geometry      : 16x16+0+0
-Endianness         : Undefined
-Tainted            : False
-red primary        : (0.64,0.33,0.03)
-Interlace          : None
-Filesize           : 1150B
-1                  : (197,177,171,255) #C5B1ABFF srgba(197,177,171,1)
-Compose            : Over
-Blue               : 8-bit
-Pixels             : 256
-Alpha              : srgba(52,52,52,0)   #34343400
-kurtosis           : -0.121
-Base type          : Undefined
-Type               : PaletteAlpha
-Geometry           : 16x16+0+0
-Pixel cache type   : Memory
-Pixels per second  : 145.97KP
-Intensity          : Undefined
-Transparent color  : black
-User time          : 0.002u
-Depth              : 8-bit
-Rendering intent   : Perceptual
-Red                : 8-bit
-standard deviation : 60.791 (0.2384)
-verbose            : true
-Class              : DirectClass
-date               : timestamp: 2025-01-05T02:17:22+00:00
-Elapsed time       : 0:01.001
-Format             : ICO (Microsoft icon)
-signature          : d7db39293d78a7644c067eb0144ad873a35c0a4ecbd7a5f1cf2270a80cc88e08
-Matte color        : grey74
-min                : 0  (0)
-50                 : (52,52,52,0) #34343400 srgba(52,52,52,0)
-Green              : 8-bit
-Units              : Undefined
-median             : 107.5 (0.42157)
-Colorspace         : sRGB
-Dispose            : Undefined
-Compression        : Undefined
-Permissions        : rw-rw-rw-
-Channels           : 4.0
-mean               : 104.22 (0.4087)
-2                  : (70,49,88,223) #463158DF srgba(70,49,88,0.87451)
-Border color       : srgb(223,223,223)
-Orientation        : Undefined
-skewness           : 0.60283
-max                : 255 (1)
-Iterations         : 0
-Version            : ImageMagick 7.1.1-43 Q8 x64 a2d96f4:20241222 https://imagemagick.org
-entropy            : 0.86121
-Colors             : 205
-green primary      : (0.3,0.6,0.1)
-```
+## **Releases & Tagging**
 
-This will return an object containing information about the image file, such as its dimensions, resolution, and file size etc.
+This project follows strict **SemVer** versioning. For all releases, use the following workflow:
 
-## 💑 Contributing
+1. Create a Draft Merge Request (MR) targeting `develop`.
+2. Once approved, merge to `develop` and then to `main`.
+3. Generate a new version tag using `New-SemverTag.ps1` (Internal Phellams Tooling).
 
-Contributions are welcome! If you have any suggestions or improvements, please open an issue or submit a pull request.
+---
 
-## 📄 License
+## **Support**
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.    
+- 📝 [Documentation](https://gitlab.kenscloud.online/phallems/mystro/-/wikis/home)
+- 🐛 [Issue Tracker](https://gitlab.kenscloud.online/phallems/mystro/-/issues)
+- 💬 [Discussions](https://gitlab.kenscloud.online/phallems/mystro/-/issues)
+
+---
+
+## **Contributing**
+
+Contributions are welcome! Please fork the repository and submit a **Merge Request** (MR) targeting the `develop` branch.

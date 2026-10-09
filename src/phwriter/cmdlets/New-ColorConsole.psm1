@@ -14,6 +14,9 @@
 .PARAMETER bgcolor
   The background color to be applied to the string.
 
+.PARAMETER format
+  The format to be applied to the string, supports `bold`, `italic`, underline`, `Strikethrough`, `invert`, and `conceal`.
+
 .PARAMETER debug
   for testing only.
 
@@ -91,11 +94,37 @@ Function New-ColorConsole() {
       "darkred",
       "darkcyan",
       "darkmagenta", ignorecase = $true)]
-    $bgcolor = "black",
+    $bgcolor = "",
+    [parameter(mandatory = $false, Position = 3)]
+    [ValidateSet(
+      "bold",
+      "italic",
+      "underline",
+      "strikethrough",
+      "invert",
+      "conceal", ignorecase = $true)]
+    $format = "",
     [parameter(mandatory = $false)]
     [switch]$debugger = $false
   )
   Begin {
+    # --- Handle Formatting ---
+    $formatCodeParts = @()
+    if ($Format) {
+      $formatMap = @{
+        'Bold'          = '1'
+        'Italic'        = '3'
+        'Underline'     = '4'
+        'Strikethrough' = '9'
+        'Invert'        = '7'
+        'Conceal'       = '8'
+      }
+      foreach ($f in $Format) {
+        if ($formatMap.ContainsKey($f)) {
+          $formatCodeParts += "`e[$($formatMap[$f])m"
+        }
+      }
+    }
     # Define the escape sequence for color formatting
     $escapeSequence = [char]27
     # Define color codes
@@ -135,26 +164,27 @@ Function New-ColorConsole() {
     $colorBgBlack = "${escapeSequence}[107m" # Black
   }
   process {
+
     if ($PSVersionTable.PSVersion.Major -eq 5 -or $debugger -eq $true) {
       #! Note the below return needs to be change to $string = "$color$string$colorReset" etc
       switch ($color) {
-        "red" { return "$colorRed$string$colorReset" }
-        "yellow" { return "$colorYellow$string$colorReset" }
-        "green" { return "$colorGreen$string$colorReset" }
-        "blue" { return "$colorBlue$string$colorReset" }
-        "white" { return "$colorWhite$string$colorReset" }
-        "black" { return "$colorBlack$string$colorReset" }
-        "cyan" { return "$colorCyan$string$colorReset" }
-        "magenta" { return "$colorMagenta$string$colorReset" }
-        "gray" { return "$colorDarkGray$string$colorReset" }
-        "darkgray" { return "$colorDarkGray$string$colorReset" }
-        "darkblue" { return "$colorDarkBlue$string$colorReset" }
-        "darkyellow" { return "$colorDarkYellow$string$colorReset" }
-        "darkgreen" { return "$colorDarkGreen$string$colorReset" }
-        "darkred" { return "$colorDarkRed$string$colorReset" }
-        "darkcyan" { return "$colorDarkCyan$string$colorReset" }
-        "darkmagenta" { return "$colorDarkMagenta$string$colorReset" }
-        default { return "$colorWhite$string$colorReset" }
+        "red" { return "$formatCodeParts$colorRed$string$colorReset" }
+        "yellow" { return "$formatCodeParts$colorYellow$string$colorReset" }
+        "green" { return "$formatCodeParts$colorGreen$string$colorReset" }
+        "blue" { return "$formatCodeParts$colorBlue$string$colorReset" }
+        "white" { return "$formatCodeParts$colorWhite$string$colorReset" }
+        "black" { return "$formatCodeParts$colorBlack$string$colorReset" }
+        "cyan" { return "$formatCodeParts$colorCyan$string$colorReset" }
+        "magenta" { return "$formatCodeParts$colorMagenta$string$colorReset" }
+        "gray" { return "$formatCodeParts$colorDarkGray$string$colorReset" }
+        "darkgray" { return "$formatCodeParts$colorDarkGray$string$colorReset" }
+        "darkblue" { return "$formatCodeParts$colorDarkBlue$string$colorReset" }
+        "darkyellow" { return "$formatCodeParts$colorDarkYellow$string$colorReset" }
+        "darkgreen" { return "$formatCodeParts$colorDarkGreen$string$colorReset" }
+        "darkred" { return "$formatCodeParts$colorDarkRed$string$colorReset" }
+        "darkcyan" { return "$formatCodeParts$colorDarkCyan$string$colorReset" }
+        "darkmagenta" { return "$formatCodeParts$colorDarkMagenta$string$colorReset" }
+        default { return "$formatCodeParts$string" }
       } #! Add switch here for background color if needed
       if ($bgcolor) {
         switch ($bgcolor) {
@@ -174,7 +204,7 @@ Function New-ColorConsole() {
           "darkred" { return "$colorBgDarkRed$string$colorBgReset" }
           "darkcyan" { return "$colorBgDarkCyan$string$colorBgReset" }
           "darkmagenta" { return "$colorBgDarkMagenta$string$colorBgReset" }
-          default { return "$colorBgWhite$string$colorBgReset" }
+          default { return "$string" }
         }
       }
     }
@@ -184,23 +214,23 @@ Function New-ColorConsole() {
       # https://en.wikipedia.org/wiki/ANSI_escape_code
       # forground color
       switch ($color) {
-        "blue" { $string = "`e[94m$string`e[0m" } 
-        "yellow" { $string = "`e[93m$string`e[0m" } 
-        "green" { $string = "`e[92m$string`e[0m" } 
-        "red" { $string = "`e[91m$string`e[0m" }  
-        "white" { $string = "`e[97m$string`e[0m" } 
-        "black" { $string = "`e[30m$string`e[0m" } 
-        "cyan" { $string = "`e[96m$string`e[0m" } 
-        "magenta" { $string = "`e[95m$string`e[0m" }
-        "gray" { $string = "`e[90m$string`e[0m" }
-        "darkgray" { $string = "`e[30m$string`e[0m" }
-        "darkblue" { $string = "`e[34m$string`e[0m" }
-        "darkyellow" { $string = "`e[33m$string`e[0m" }
-        "darkgreen" { $string = "`e[32m$string`e[0m" }
-        "darkred" { $string = "`e[31m$string`e[0m" }
-        "darkcyan" { $string = "`e[36m$string`e[0m" }
-        "darkmagenta" { $string = "`e[35m$string`e[0m" }
-        default { $string = "$string" }
+        "blue" { $string = "$formatCodeParts`e[94m$string`e[0m" } 
+        "yellow" { $string = "$formatCodeParts`e[93m$string`e[0m" } 
+        "green" { $string = "$formatCodeParts`e[92m$string`e[0m" } 
+        "red" { $string = "$formatCodeParts`e[91m$string`e[0m" }  
+        "white" { $string = "$formatCodeParts`e[97m$string`e[0m" } 
+        "black" { $string = "$formatCodeParts`e[30m$string`e[0m" } 
+        "cyan" { $string = "$formatCodeParts`e[96m$string`e[0m" } 
+        "magenta" { $string = "$formatCodeParts`e[95m$string`e[0m" }
+        "gray" { $string = "$formatCodeParts`e[90m$string`e[0m" }
+        "darkgray" { $string = "$formatCodeParts`e[30m$string`e[0m" }
+        "darkblue" { $string = "$formatCodeParts`e[34m$string`e[0m" }
+        "darkyellow" { $string = "$formatCodeParts`e[33m$string`e[0m" }
+        "darkgreen" { $string = "$formatCodeParts`e[32m$string`e[0m" }
+        "darkred" { $string = "$formatCodeParts`e[31m$string`e[0m" }
+        "darkcyan" { $string = "$formatCodeParts`e[36m$string`e[0m" }
+        "darkmagenta" { $string = "$formatCodeParts`e[35m$string`e[0m" }
+        default { $string = "$formatCodeParts$string" }
       }
       # background color
       if ($bgcolor) {
@@ -221,7 +251,7 @@ Function New-ColorConsole() {
           "darkred" { $string = "`e[41m$string`e[0m" }
           "darkcyan" { $string = "`e[46m$string`e[0m" }
           "darkmagenta" { $string = "`e[45m$string`e[0m" }
-          default { $string = $string } # Default is to reset the background color
+          default { $string = "$formatCodeParts$string" } # Default is to reset the background color
         }
       }
     }
